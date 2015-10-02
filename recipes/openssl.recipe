@@ -1,0 +1,30 @@
+# -*- Mode: Python -*- vi:si:et:sw=4:sts=4:ts=4:syntax=python
+
+
+class Recipe(recipe.Recipe):
+    name = 'openssl'
+    version = '1.0.1p'
+    stype = SourceType.TARBALL
+    url = 'https://www.openssl.org/source/openssl-1.0.1p.tar.gz'
+    autoreconf = False
+    autoreconf_sh = 'chmod +w config.sub config.guess'
+    configure_tpl = './Configure --prefix=%(prefix)s %(options)s '
+    patches = ['openssl/0001-Allow-and-ignore-disable-introspection-.-For-iPhoneO.patch']
+    patches += ['openssl/0002-Remove-install_docs.patch']
+    add_host_build_target = False
+
+    files_devel = ['include/openssl',
+                   'lib/pkgconfig/openssl.pc',
+                   'lib/pkgconfig/libssl.pc',
+                   'lib/pkgconfig/libcrypto.pc']
+
+    files_libs = ['libssl','libcrypto']
+
+    def prepare(self):
+        if self.config.target_platform == Platform.DARWIN:
+            self.configure_options += ' darwin'
+        elif self.config.target_platform == Platform.IOS:
+            self.configure_options += ' iphoneos-cross'
+
+        if self.config.target_arch == Architecture.X86_64:
+            self.configure_options += ' no-asm'
