@@ -17,6 +17,7 @@ class Recipe(recipe.Recipe):
     files_devel = ['include/pixman-1', 'lib/pkgconfig/pixman-1.pc']
 
     def prepare(self):
+        self.configure_options = "--disable-mmx"
         if self.config.target_platform == Platform.ANDROID:
             # FIXME: Fails to link because of undefined __builtin_* symbols
             self.configure_options = '--disable-arm-iwmmxt'
