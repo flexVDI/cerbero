@@ -1,0 +1,26 @@
+# -*- Mode: Python -*- vi:si:et:sw=4:sts=4:ts=4:syntax=python
+
+
+class Recipe(recipe.Recipe):
+    name = 'spice-gtk'
+    version = '0.28'
+    stype = SourceType.TARBALL
+    url = 'http://depot.flexvdi.com/sources/spice-gtk-0.28.tgz'
+    # either LGPLv2.1 or MPLv1.1
+    licenses = [License.LGPLv2_1]
+    autoreconf = True
+    autoreconf_sh = 'NOCONFIGURE=1 ./autogen.sh'
+    deps = ['glib', 'libpng', 'zlib', 'pixman', 'fontconfig', 'freetype', 'gtk-doc-lite',
+            'nopoll', 'gstreamer-1.0', 'gst-plugins-base-1.0', 'libjpeg-turbo']
+    patches = ['spice-gtk/0001-Remove-spice_usb_device_get_libusb_device-symbol-fro.patch',
+               'spice-gtk/0002-Remove-spice_usb_device_get_libusb_device-from-spice.patch',
+               'spice-gtk/0003-Fix-write_int64-macro-for-ARMLE.patch']
+
+    files_devel = ['include/spice-client-glib-2.0',
+                   'lib/pkgconfig/spice-client-glib-2.0.pc']
+
+    files_libs = ['libspice-client-glib-2.0']
+
+    def prepare(self):
+        self.configure_options += ' --enable-static --disable-werror --with-gtk=no --disable-smartcard'
+        self.configure_options += ' --disable-controller --with-audio=gstreamer --with-coroutine=gthread'
