@@ -1,0 +1,17 @@
+# -*- Mode: Python -*- vi:si:et:sw=4:sts=4:ts=4:syntax=python
+
+
+class Recipe(recipe.Recipe):
+    name = 'spice-protocol'
+    version = '0.28'
+    stype = SourceType.TARBALL
+    url = 'http://depot.flexvdi.com/sources/spice-protocol-0.28.tgz'
+    # either LGPLv2.1 or MPLv1.1
+    licenses = [License.LGPLv2_1]
+    autoreconf = True
+    autoreconf_sh = 'NOCONFIGURE=1 ./autogen.sh'
+    configure_tpl = './configure --prefix=%(prefix)s --datarootdir=%(prefix)s/lib %(options)s '
+
+    files_devel = ['include/spice-1',
+                   'lib/pkgconfig/spice-protocol.pc']
+
