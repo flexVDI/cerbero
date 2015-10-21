@@ -12,6 +12,7 @@ class Recipe(recipe.Recipe):
     patches = ['openssl/0001-Allow-and-ignore-disable-introspection-.-For-iPhoneO.patch']
     patches += ['openssl/0002-Remove-install_docs.patch']
     add_host_build_target = False
+    disable_introspection = True
 
     files_devel = ['include/openssl',
                    'lib/pkgconfig/openssl.pc',
@@ -22,7 +23,10 @@ class Recipe(recipe.Recipe):
 
     def prepare(self):
         if self.config.target_platform == Platform.DARWIN:
-            self.configure_options += ' darwin'
+            if self.config.target_arch == Architecture.X86_64:
+                self.configure_options += ' darwin64-x86_64-cc'
+            else:
+                self.configure_options += ' darwin-i386-cc'
         elif self.config.target_platform == Platform.IOS:
             self.configure_options += ' iphoneos-cross'
 
