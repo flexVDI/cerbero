@@ -1,0 +1,17 @@
+# -*- Mode: Python -*- vi:si:et:sw=4:sts=4:ts=4:syntax=python
+
+
+class Recipe(recipe.Recipe):
+    name = 'spice-mono-glue'
+    version = '2.2.0'
+    stype = SourceType.TARBALL
+    url = 'http://depot.flexvdi.com/sources/spice-mono-glue-2.2.0.tgz'
+    licenses = [License.LGPLv2_1]
+    deps = ['spice-protocol', 'spice-gtk']
+    configure_options = ' --disable-printing --disable-sso'
+
+    files_libs = ['libspice-mono-glue']
+
+    def prepare(self):
+        self.append_env['CFLAGS'] = ' -O2 -fPIC'
+
