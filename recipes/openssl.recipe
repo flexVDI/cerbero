@@ -9,8 +9,9 @@ class Recipe(recipe.Recipe):
     autoreconf = False
     autoreconf_sh = 'chmod +w config.sub config.guess'
     configure_tpl = './Configure --prefix=%(prefix)s %(options)s '
-    patches = ['openssl/0001-Allow-and-ignore-disable-introspection-.-For-iPhoneO.patch']
-    patches += ['openssl/0002-Remove-install_docs.patch']
+    patches = ['openssl/0001-Allow-and-ignore-disable-introspection-.-For-iPhoneO.patch',
+               'openssl/0002-Remove-install_docs.patch',
+               'openssl/0003-When-building-for-android-on-cerbero-use-CFLAGS.patch']
     add_host_build_target = False
     disable_introspection = True
 
@@ -29,6 +30,15 @@ class Recipe(recipe.Recipe):
                 self.configure_options += ' darwin-i386-cc'
         elif self.config.target_platform == Platform.IOS:
             self.configure_options += ' iphoneos-cross'
+        elif self.config.target_platform == Platform.ANDROID:
+            if self.config.target_arch == Architecture.X86:
+                self.configure_options += ' android-x86'
+            elif self.config.target_arch == Architecture.X86_64:
+                self.configure_options += ' android-x86'
+            elif self.config.target_arch == Architecture.ARMv7:
+                self.configure_options += ' android-armv7'
+            else:
+                self.configure_options += ' android-arm'
 
         if self.config.target_arch == Architecture.X86_64:
             self.configure_options += ' no-asm'
