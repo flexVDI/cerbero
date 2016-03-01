@@ -146,7 +146,7 @@ class Recipe(custom.GStreamerStatic):
         Platform.WINDOWS: [
              'libgstd3dvideosink',
              'libgstwasapi',
-             'libgstopengl',
+             #'libgstopengl',
             ],
         Platform.DARWIN: [
              'libgstapplemedia',
