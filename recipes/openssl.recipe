@@ -1,44 +1,69 @@
 # -*- Mode: Python -*- vi:si:et:sw=4:sts=4:ts=4:syntax=python
 
+from cerbero.build.build import modify_environment
+import sys
 
 class Recipe(recipe.Recipe):
     name = 'openssl'
-    version = '1.0.1p'
+    version = '1.0.2g'
+    licenses = [License.BSD_like]
     stype = SourceType.TARBALL
-    url = 'https://www.openssl.org/source/openssl-1.0.1p.tar.gz'
-    autoreconf = False
-    autoreconf_sh = 'chmod +w config.sub config.guess'
-    configure_tpl = './Configure --prefix=%(prefix)s %(options)s '
-    patches = ['openssl/0001-Allow-and-ignore-disable-introspection-.-For-iPhoneO.patch',
-               'openssl/0002-Remove-install_docs.patch',
-               'openssl/0003-When-building-for-android-on-cerbero-use-CFLAGS.patch']
-    add_host_build_target = False
-    disable_introspection = True
+    url = 'https://www.openssl.org/source/{0}-{1}.tar.gz'.format(name, version)
 
+    autoreconf = False
+
+    add_host_build_target = False
+    # Parallel make fails randomly; probably races
+    allow_parallel_build = False
+
+    files_bins = ['openssl'] 
     files_devel = ['include/openssl',
                    'lib/pkgconfig/openssl.pc',
                    'lib/pkgconfig/libssl.pc',
                    'lib/pkgconfig/libcrypto.pc']
-
     files_libs = ['libssl','libcrypto']
 
     def prepare(self):
+
         if self.config.target_platform == Platform.DARWIN:
             if self.config.target_arch == Architecture.X86_64:
-                self.configure_options += ' darwin64-x86_64-cc'
+                self.openssl_platform =' darwin64-x86_64-cc '
             else:
-                self.configure_options += ' darwin-i386-cc'
+                self.openssl_platform =' darwin-i386-cc'
         elif self.config.target_platform == Platform.IOS:
-            self.configure_options += ' iphoneos-cross'
+            self.openssl_platform =' iphoneos-cross'
         elif self.config.target_platform == Platform.ANDROID:
             if self.config.target_arch == Architecture.X86:
-                self.configure_options += ' android-x86'
+                self.openssl_platform =' android-x86'
             elif self.config.target_arch == Architecture.X86_64:
-                self.configure_options += ' android-x86'
+                self.openssl_platform =' android-x86'
             elif self.config.target_arch == Architecture.ARMv7:
-                self.configure_options += ' android-armv7'
+                self.openssl_platform =' android-armv7'
             else:
-                self.configure_options += ' android-arm'
+                self.openssl_platform =' android-arm'
+        elif self.config.target_platform == Platform.WINDOWS:
+            if self.config.target_arch == Architecture.X86:
+                self.openssl_platform =' mingw'
+                self.make += ' CROSS_COMPILE=i686-w64-mingw32-'
+                self.make_install += ' CROSS_COMPILE=i686-w64-mingw32-'
+            elif self.config.target_arch == Architecture.X86_64:
+                self.openssl_platform = ' mingw64'
+                self.make += ' CROSS_COMPILE=x86_64-w64-mingw32-'
+                self.make_install += ' CROSS_COMPILE=x86_64-w64-mingw32-'
+        else:
+            print('Recipe does not support platform: '  + self.config.target_platform + " Exiting");
+            sys.exit();
 
-        if self.config.target_arch == Architecture.X86_64:
-            self.configure_options += ' no-asm'
+        self.configure_options += ' shared'
+
+    @modify_environment
+    def configure(self):
+        # OpenSSL guesses the libdir incorrectly on x86_64
+        config_sh = 'sh ./Configure --prefix=' + self.config.prefix + \
+            ' --libdir=lib' + self.config.lib_suffix
+        if self.config.target_platform == Platform.IOS:
+            config_sh += ' no-shared no-dso '
+        else:
+            config_sh += ' shared ' 
+        shell.call(config_sh + self.openssl_platform, self.build_dir)
+        shell.call('make depend', self.build_dir)
