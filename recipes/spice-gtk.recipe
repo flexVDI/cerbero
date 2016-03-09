@@ -1,14 +1,15 @@
 # -*- Mode: Python -*- vi:si:et:sw=4:sts=4:ts=4:syntax=python
+
 # You are required to manually install pyparsing in your system
 
 class Recipe(recipe.Recipe):
     name = 'spice-gtk'
     version = '0.28'
     stype = SourceType.TARBALL
+
 #   url = 'http://depot.flexvdi.com/sources/spice-gtk-0.28.tgz'
     url = 'http://depot.flexvdi.com/sources/spice-gtk-0.28.usbdk.tgz' 
 # git repo not usable. 2 levels of recursive submodules are not supported by cerbero
-
 
     # either LGPLv2.1 or MPLv1.1
     licenses = [License.LGPLv2_1]
@@ -39,7 +40,7 @@ class Recipe(recipe.Recipe):
         if self.config.target_platform in [Platform.IOS, 
                                           Platform.DARWIN,
                                           Platform.ANDROID]:
-            self.configure_options += ' --with-coroutine=gthread --with-gtk=no'
+            self.configure_options += ' --with-coroutine=gthread '
         elif self.config.target_platform == Platform.WINDOWS:
 
 #--with-gtk=2.0 --enable-spicy=yes 

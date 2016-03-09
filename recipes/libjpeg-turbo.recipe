@@ -22,3 +22,6 @@ class Recipe(recipe.Recipe):
             # avoid using xcode's nasm (doesn't support nasm-like arguments)
             # instead use cerbero's yasm
             self.new_env['NASM'] = 'yasm'
+        if self.config.target_platform == Platform.WINDOWS:
+            self.configure_options += 'CPPFLAGS=" -DWIN32_LEAN_AND_MEAN ${CPPFLAGS}"'
+
