@@ -1,0 +1,12 @@
+# -*- Mode: Python -*- vi:si:et:sw=4:sts=4:ts=4:syntax=python
+
+
+class Recipe(recipe.Recipe):
+
+    name = 'flexdp'
+    version = '2.2.0'
+    licenses = [License.LGPLv2_1]
+    remotes = {'origin': 'https://git.flexvdi.com/scm/flexvdi/flexdp.git'}
+    commit = '2.2.0'
+
+    autoreconf = True
