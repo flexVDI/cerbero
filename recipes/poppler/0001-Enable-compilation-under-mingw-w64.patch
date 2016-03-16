@@ -1,0 +1,38 @@
+From 3d1e3f22040e4789da6c103d45cc2f6a95a85e80 Mon Sep 17 00:00:00 2001
+From: "jorge.olmos" <jorge.olmos@flexvdi.com>
+Date: Wed, 16 Mar 2016 10:34:33 +0100
+Subject: [PATCH] Enable compilation under mingw-w64
+
+---
+ test/perf-test.cc | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
+
+diff --git a/test/perf-test.cc b/test/perf-test.cc
+index 4fb15d9..a544325 100644
+--- a/test/perf-test.cc
++++ b/test/perf-test.cc
+@@ -341,6 +341,21 @@ void strcpy_s(char* dst, size_t dst_size, const char* src)
+ }
+ #endif
+ 
++
++#if defined(MINGW_HAS_SECURE_API)
++#ifdef __cplusplus
++extern "C" {
++#endif
++/* Workaround for a mingw-w64 problem:
++  - supplies strcat_s symbol, so that configure finds and defines HAVE_STRCAT_S
++  - does not declare the function
++ Therefore compilation fails. We declare strcat_s here, so everything is in place. */
++  _CRTIMP errno_t __cdecl strcat_s(char *_Dst,size_t _DstSizeInChars,const char *_Src);
++#ifdef __cplusplus
++}
++#endif
++#endif
++
+ #ifndef HAVE_STRCAT_S
+ void strcat_s(char *dst, size_t dst_size, const char* src)
+ {
+-- 
+2.5.0
+

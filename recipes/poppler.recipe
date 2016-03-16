@@ -1,0 +1,18 @@
+# -*- Mode: Python -*- vi:si:et:sw=4:sts=4:ts=4:syntax=python
+
+class Recipe(recipe.Recipe):
+
+    name = 'poppler'
+    version = '0.41.0'
+    licenses = [License.LGPLv2_1]
+    stype = SourceType.TARBALL 
+    url = 'https://poppler.freedesktop.org/{0}-{1}.tar.xz'.format(name, version)
+
+    deps = ['poppler-data', 'cairo']
+
+    patches = ['poppler/0001-Enable-compilation-under-mingw-w64.patch' ]
+
+    def prepare(self):
+        if self.config.target_platform == Platform.WINDOWS:
+            self.configure_options += ' CPPFLAGS=" -DWIN32_LEAN_AND_MEAN -DMINGW_HAS_SECURE_API ${CPPFLAGS}" --disable-utils'
+
