@@ -1,0 +1,16 @@
+# -*- Mode: Python -*- vi:si:et:sw=4:sts=4:ts=4:syntax=python
+
+
+class Recipe(recipe.Recipe):
+
+    name = 'flexvdi-spice-client'
+    version = '2.2.3'
+    licenses = [License.LGPLv2_1]
+    remotes = {'origin': 'https://git.flexvdi.com/scm/flexvdi/flexvdi-spice-client.git'}
+    commit = '2.2.3'
+    btype = BuildType.CMAKE
+
+    deps = ['flexdp', 'glib', 'poppler', 'spice-gtk', 'cairo']
+
+    def prepare(self):
+        self.append_env['CFLAGS'] = " ${LDFLAGS} "
