@@ -4,14 +4,25 @@
 class Recipe(recipe.Recipe):
     name = 'spice-mono-glue'
     version = '2.2.0'
-    stype = SourceType.TARBALL
-    url = 'http://depot.flexvdi.com/sources/spice-mono-glue-2.2.0.tgz'
+#    stype = SourceType.TARBALL
+#    url = 'http://depot.flexvdi.com/sources/spice-mono-glue-2.2.0.tgz'
+
+    commit = '8b812'
+    remotes = {'origin': 'https://git.flexvdi.com/scm/flexvdi/spice-mono-glue.git'}
+
+    autoreconf = True 
+    autoreconf_sh = 'autoreconf -fiv'
+
+    config_sh = './configure'
+
     licenses = [License.LGPLv2_1]
     deps = ['spice-protocol', 'spice-gtk']
-    configure_options = ' --disable-printing --disable-sso'
-
-    files_libs = ['libspice-mono-glue']
+    platform_deps = {
+            Platform.WINDOWS: ['flexvdi-spice-client', 'libusb', 'usbredir']}
 
     def prepare(self):
-        self.append_env['CFLAGS'] = ' -O2 -fPIC'
+        if self.config.target_platform != Platform.WINDOWS:
+            self.configure.options += ' --disable-printing'
+        else:
+            self.append_env['CFLAGS'] = ' -O2 -fPIC'
 
