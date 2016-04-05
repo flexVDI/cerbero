@@ -19,7 +19,7 @@ class Recipe(recipe.Recipe):
     autoreconf_sh = 'mkdir spice-common/spice-protocol/m4; gtkdocize; export ACLOCAL="$ACLOCAL $ACLOCAL_FLAGS"; autoreconf -fiv; intltoolize -f --copy'
 
     deps = ['glib', 'libpng', 'zlib', 'pixman', 'fontconfig', 'freetype', 'gtk-doc-lite',
-            'nopoll', 'gstreamer-1.0', 'gst-plugins-base-1.0', 'libjpeg-turbo']
+            'nopoll', 'gstreamer-1.0', 'gst-plugins-base-1.0', 'libjpeg-turbo', 'opus']
     platform_deps = {
             Platform.WINDOWS: ['libusb', 'usbredir']}
 
