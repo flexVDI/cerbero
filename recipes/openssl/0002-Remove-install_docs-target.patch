@@ -1,0 +1,77 @@
+From 2039981da08068efad0a3e7c92108ed32e787d89 Mon Sep 17 00:00:00 2001
+From: "Sergio L. Pascual" <sergiolpascual@flexvdi.com>
+Date: Wed, 13 Apr 2016 16:36:22 +0200
+Subject: [PATCH 2/3] Remove install_docs target
+
+---
+ Makefile.org | 49 +------------------------------------------------
+ 1 file changed, 1 insertion(+), 48 deletions(-)
+
+diff --git a/Makefile.org b/Makefile.org
+index 76fdbdf..f8b4b56 100644
+--- a/Makefile.org
++++ b/Makefile.org
+@@ -528,7 +528,7 @@ dist:
+ 	@$(MAKE) SDIRS='$(SDIRS)' clean
+ 	@$(MAKE) TAR='$(TAR)' TARFLAGS='$(TARFLAGS)' $(DISTTARVARS) tar
+ 
+-install: all install_docs install_sw
++install: all install_sw
+ 
+ install_sw:
+ 	@$(PERL) $(TOP)/util/mkdir-p.pl $(INSTALL_PREFIX)$(INSTALLTOP)/bin \
+@@ -628,51 +628,4 @@ install_html_docs:
+ 		done; \
+ 	done
+ 
+-install_docs:
+-	@$(PERL) $(TOP)/util/mkdir-p.pl \
+-		$(INSTALL_PREFIX)$(MANDIR)/man1 \
+-		$(INSTALL_PREFIX)$(MANDIR)/man3 \
+-		$(INSTALL_PREFIX)$(MANDIR)/man5 \
+-		$(INSTALL_PREFIX)$(MANDIR)/man7
+-	@pod2man="`cd ./util; ./pod2mantest $(PERL)`"; \
+-	here="`pwd`"; \
+-	filecase=; \
+-	case "$(PLATFORM)" in DJGPP|Cygwin*|mingw*|darwin*-*-cc) \
+-		filecase=-i; \
+-	esac; \
+-	set -e; for i in doc/apps/*.pod; do \
+-		fn=`basename $$i .pod`; \
+-		sec=`$(PERL) util/extract-section.pl 1 < $$i`; \
+-		echo "installing man$$sec/$$fn.$${sec}$(MANSUFFIX)"; \
+-		(cd `$(PERL) util/dirname.pl $$i`; \
+-		sh -c "$$pod2man \
+-			--section=$$sec --center=OpenSSL \
+-			--release=$(VERSION) `basename $$i`") \
+-			>  $(INSTALL_PREFIX)$(MANDIR)/man$$sec/$$fn.$${sec}$(MANSUFFIX); \
+-		$(PERL) util/extract-names.pl < $$i | \
+-			(grep -v $$filecase "^$$fn\$$"; true) | \
+-			(grep -v "[	]"; true) | \
+-			(cd $(INSTALL_PREFIX)$(MANDIR)/man$$sec/; \
+-			 while read n; do \
+-				PLATFORM=$(PLATFORM) $$here/util/point.sh $$fn.$${sec}$(MANSUFFIX) "$$n".$${sec}$(MANSUFFIX); \
+-			 done); \
+-	done; \
+-	set -e; for i in doc/crypto/*.pod doc/ssl/*.pod; do \
+-		fn=`basename $$i .pod`; \
+-		sec=`$(PERL) util/extract-section.pl 3 < $$i`; \
+-		echo "installing man$$sec/$$fn.$${sec}$(MANSUFFIX)"; \
+-		(cd `$(PERL) util/dirname.pl $$i`; \
+-		sh -c "$$pod2man \
+-			--section=$$sec --center=OpenSSL \
+-			--release=$(VERSION) `basename $$i`") \
+-			>  $(INSTALL_PREFIX)$(MANDIR)/man$$sec/$$fn.$${sec}$(MANSUFFIX); \
+-		$(PERL) util/extract-names.pl < $$i | \
+-			(grep -v $$filecase "^$$fn\$$"; true) | \
+-			(grep -v "[	]"; true) | \
+-			(cd $(INSTALL_PREFIX)$(MANDIR)/man$$sec/; \
+-			 while read n; do \
+-				PLATFORM=$(PLATFORM) $$here/util/point.sh $$fn.$${sec}$(MANSUFFIX) "$$n".$${sec}$(MANSUFFIX); \
+-			 done); \
+-	done
+-
+ # DO NOT DELETE THIS LINE -- make depend depends on it.
+-- 
+2.6.4 (Apple Git-63)
+

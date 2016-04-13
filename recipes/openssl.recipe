@@ -9,6 +9,10 @@ class Recipe(recipe.Recipe):
     licenses = [License.BSD_like]
     stype = SourceType.TARBALL
     url = 'https://www.openssl.org/source/{0}-{1}.tar.gz'.format(name, version)
+    patches = ['openssl/0001-Fix-iphoneos-cross-flags.-Allow-and-ignore-disable-i.patch',
+               'openssl/0002-Remove-install_docs-target.patch',
+               'openssl/0003-Use-CFLAGS-for-android-cross-builds.patch',
+               'openssl/0004-Disable-inline-assembly-for-iphoneos-cross-target.patch']
 
     autoreconf = False
 
