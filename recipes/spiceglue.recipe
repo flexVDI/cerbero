@@ -1,0 +1,25 @@
+# -*- Mode: Python -*- vi:si:et:sw=4:sts=4:ts=4:syntax=python
+
+
+class Recipe(recipe.Recipe):
+    name = 'spiceglue'
+    version = '2.2.1'
+    commit = '2.2.1'
+    remotes = {'origin': 'https://github.com/flexvdi/spiceglue'}
+
+    autoreconf = True 
+    autoreconf_sh = 'autoreconf -fiv'
+
+    config_sh = './configure'
+
+    licenses = [License.LGPLv2_1]
+    deps = ['spice-protocol', 'spice-gtk']
+    platform_deps = {
+            Platform.WINDOWS: ['flexvdi-spice-client', 'libusb', 'usbredir']}
+
+    def prepare(self):
+        if self.config.target_platform != Platform.WINDOWS:
+            self.configure.options += ' --disable-printing'
+        else:
+            self.append_env['CFLAGS'] = ' -O2 -fPIC'
+
