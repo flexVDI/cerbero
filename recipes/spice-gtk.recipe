@@ -7,8 +7,7 @@ class Recipe(recipe.Recipe):
     version = '0.28'
     stype = SourceType.TARBALL
 
-#   url = 'http://depot.flexvdi.com/sources/spice-gtk-0.28.tgz'
-    url = 'http://depot.flexvdi.com/sources/spice-gtk-0.28.usbdk.tgz' 
+    url = 'http://depot.flexvdi.com/sources/spice-gtk-0.28.tgz'
 # git repo not usable. 2 levels of recursive submodules are not supported by cerbero
 
     # either LGPLv2.1 or MPLv1.1
