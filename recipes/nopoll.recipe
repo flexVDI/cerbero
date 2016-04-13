@@ -3,9 +3,9 @@
 
 class Recipe(recipe.Recipe):
     name = 'nopoll'
-    version = '0.2.6.b130'
-    stype = SourceType.TARBALL
-    url = 'http://depot.flexvdi.com/sources/nopoll-0.2.6.b130.tgz'
+    version = '0.2.7'
+    commit = 'origin/master'
+    remotes = {'origin': 'https://github.com/flexvdi/nopoll'}
     licenses = [License.LGPLv2_1]
     deps = ['openssl']
 
