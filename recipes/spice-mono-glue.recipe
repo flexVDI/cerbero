@@ -22,7 +22,7 @@ class Recipe(recipe.Recipe):
 
     def prepare(self):
         if self.config.target_platform != Platform.WINDOWS:
-            self.configure.options += ' --disable-printing'
+            self.configure_options += ' --disable-printing'
         else:
             self.append_env['CFLAGS'] = ' -O2 -fPIC'
 
