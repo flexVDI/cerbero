@@ -3,9 +3,9 @@
 
 class Recipe(recipe.Recipe):
     name = 'spice-protocol'
-    version = '0.28'
+    version = 'flexvdi-2.2.2'
     stype = SourceType.TARBALL
-    url = 'http://depot.flexvdi.com/sources/spice-protocol-0.28.tgz'
+    url = 'http://depot.flexvdi.com/sources/spice-protocol-flexvdi-2.2.2.tgz'
     # either LGPLv2.1 or MPLv1.1
     licenses = [License.LGPLv2_1]
     autoreconf = True

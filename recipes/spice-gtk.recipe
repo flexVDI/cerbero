@@ -4,10 +4,10 @@
 
 class Recipe(recipe.Recipe):
     name = 'spice-gtk'
-    version = '0.28'
+    version = 'flexvdi-2.2.2'
     stype = SourceType.TARBALL
 
-    url = 'http://depot.flexvdi.com/sources/spice-gtk-0.28.tgz'
+    url = 'http://depot.flexvdi.com/sources/spice-gtk-flexvdi-2.2.2.tgz'
 # git repo not usable. 2 levels of recursive submodules are not supported by cerbero
 
     # either LGPLv2.1 or MPLv1.1
@@ -24,7 +24,8 @@ class Recipe(recipe.Recipe):
 
     patches = ['spice-gtk/0001-Remove-spice_usb_device_get_libusb_device-symbol-fro.patch',
                'spice-gtk/0002-Remove-spice_usb_device_get_libusb_device-from-spice.patch',
-               'spice-gtk/0003-Use-memcpy-for-write_-int-uint-64-on-ARM.patch']
+               'spice-gtk/0003-Use-memcpy-for-write_-int-uint-64-on-ARM.patch',
+               'spice-gtk/0004-Remove-set_va_display_hook-symbol-from-linker-files.patch']
 
     files_devel = ['include/spice-client-glib-2.0',
                    'lib/pkgconfig/spice-client-glib-2.0.pc']
@@ -39,7 +40,7 @@ class Recipe(recipe.Recipe):
         if self.config.target_platform in [Platform.IOS, 
                                           Platform.DARWIN,
                                           Platform.ANDROID]:
-            self.configure_options += ' --with-coroutine=gthread '
+            self.configure_options += ' --with-gtk=no --with-coroutine=gthread '
         elif self.config.target_platform == Platform.WINDOWS:
             self.configure_options += ' --with-gtk=3.0 --enable-spicy=yes'
             self.configure_options += ' --enable-usb-redir --with-usb-ids-path=./usb.ids'

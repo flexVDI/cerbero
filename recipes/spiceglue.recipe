@@ -3,8 +3,8 @@
 
 class Recipe(recipe.Recipe):
     name = 'spiceglue'
-    version = '2.2.1'
-    commit = '2.2.1'
+    version = '2.2.2'
+    commit = '2.2.2'
     remotes = {'origin': 'https://github.com/flexvdi/spiceglue'}
 
     autoreconf = True 
@@ -16,6 +16,7 @@ class Recipe(recipe.Recipe):
     deps = ['spice-protocol', 'spice-gtk']
     platform_deps = {
             Platform.WINDOWS: ['flexvdi-spice-client', 'libusb', 'usbredir']}
+    files_libs = ['libspiceglue']
 
     def prepare(self):
         if self.config.target_platform != Platform.WINDOWS:
