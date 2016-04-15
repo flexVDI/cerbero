@@ -20,7 +20,8 @@ class Recipe(recipe.Recipe):
     deps = ['glib', 'libpng', 'zlib', 'pixman', 'fontconfig', 'freetype', 'gtk-doc-lite',
             'nopoll', 'gstreamer-1.0', 'gst-plugins-base-1.0', 'libjpeg-turbo', 'opus']
     platform_deps = {
-            Platform.WINDOWS: ['libusb', 'usbredir', 'gtk+3']}
+            Platform.WINDOWS: [ 'gtk+3', 'librsvg']}
+# Still without usb 'libusb', 'usbredir',
 
     patches = ['spice-gtk/0001-Remove-spice_usb_device_get_libusb_device-symbol-fro.patch',
                'spice-gtk/0002-Remove-spice_usb_device_get_libusb_device-from-spice.patch',
@@ -43,5 +44,5 @@ class Recipe(recipe.Recipe):
             self.configure_options += ' --with-gtk=no --with-coroutine=gthread '
         elif self.config.target_platform == Platform.WINDOWS:
             self.configure_options += ' --with-gtk=3.0 --enable-spicy=yes'
-            self.configure_options += ' --enable-usb-redir --with-usb-ids-path=./usb.ids'
+#            self.configure_options += ' --enable-usb-redir --with-usb-ids-path=./usb.ids'
             self.configure_options += ' CPPFLAGS=" -DWIN32_LEAN_AND_MEAN ${CPPFLAGS}"'
