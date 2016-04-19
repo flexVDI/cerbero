@@ -1,17 +1,17 @@
-From 221306fc8bf9506b52a3d4f5dc26f763d10d8679 Mon Sep 17 00:00:00 2001
+From 70dfe25d294b28322fa03b2c970fc81ef8945556 Mon Sep 17 00:00:00 2001
 From: "Sergio L. Pascual" <sergiolpascual@flexvdi.com>
-Date: Wed, 13 Apr 2016 16:37:49 +0200
-Subject: [PATCH 3/3] Use CFLAGS for android cross builds.
+Date: Tue, 19 Apr 2016 11:45:13 +0200
+Subject: [PATCH] Use CFLAGS for android builds
 
 ---
- Configure | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ Configure | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/Configure b/Configure
-index 3ffa8b6..9c21b7f 100755
+index 3ffa8b6..3feb238 100755
 --- a/Configure
 +++ b/Configure
-@@ -469,10 +469,9 @@ my %table=(
+@@ -469,10 +469,10 @@ my %table=(
  "linux-alpha+bwx-ccc","ccc:-fast -readonly_strings -DL_ENDIAN::-D_REENTRANT:::SIXTY_FOUR_BIT_LONG RC4_CHAR RC4_CHUNK DES_INT DES_PTR DES_RISC1 DES_UNROLL:${alpha_asm}",
  
  # Android: linux-* but without pointers to headers and libs.
@@ -22,6 +22,7 @@ index 3ffa8b6..9c21b7f 100755
 +"android","gcc:\$(CFLAGS)::-D_REENTRANT::-ldl:BN_LLONG RC4_CHAR RC4_CHUNK DES_INT DES_UNROLL BF_PTR:${no_asm}:dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
 +"android-x86","gcc:\$(CFLAGS)::-D_REENTRANT::-ldl:BN_LLONG ${x86_gcc_des} ${x86_gcc_opts}:".eval{my $asm=${x86_elf_asm};$asm=~s/:elf/:android/;$asm}.":dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
 +"android-armv7","gcc:\$(CFLAGS)::-D_REENTRANT::-ldl:BN_LLONG RC4_CHAR RC4_CHUNK DES_INT DES_UNROLL BF_PTR:${armv4_asm}:dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
++"android-mips","gcc:\$(CFLAGS)::-D_REENTRANT::-ldl:BN_LLONG RC4_CHAR RC4_CHUNK DES_INT DES_UNROLL BF_PTR:${mips32_asm}:o32:dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
  
  #### *BSD [do see comment about ${BSDthreads} above!]
  "BSD-generic32","gcc:-O3 -fomit-frame-pointer -Wall::${BSDthreads}:::BN_LLONG RC2_CHAR RC4_INDEX DES_INT DES_UNROLL:${no_asm}:dlfcn:bsd-gcc-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
