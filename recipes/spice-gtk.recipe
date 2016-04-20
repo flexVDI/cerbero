@@ -4,10 +4,12 @@
 
 class Recipe(recipe.Recipe):
     name = 'spice-gtk'
-    version = 'flexvdi-2.2.2'
+#    version = 'flexvdi-2.2.2'
+    version = '0.28'
     stype = SourceType.TARBALL
 
-    url = 'http://depot.flexvdi.com/sources/spice-gtk-flexvdi-2.2.2.tgz'
+#   url = 'http://depot.flexvdi.com/sources/spice-gtk-flexvdi-2.2.2.tgz'
+    url = 'http://depot.flexvdi.com/sources/spice-gtk-0.28.usbdk.tgz' # test
 # git repo not usable. 2 levels of recursive submodules are not supported by cerbero
 
     # either LGPLv2.1 or MPLv1.1
@@ -20,13 +22,12 @@ class Recipe(recipe.Recipe):
     deps = ['glib', 'libpng', 'zlib', 'pixman', 'fontconfig', 'freetype', 'gtk-doc-lite',
             'nopoll', 'gstreamer-1.0', 'gst-plugins-base-1.0', 'libjpeg-turbo', 'opus']
     platform_deps = {
-            Platform.WINDOWS: [ 'gtk+3', 'librsvg']}
-# Still without usb 'libusb', 'usbredir',
+            Platform.WINDOWS: ['libusb', 'usbredir', 'gtk+3', 'librsvg']}
 
-    patches = ['spice-gtk/0001-Remove-spice_usb_device_get_libusb_device-symbol-fro.patch',
-               'spice-gtk/0002-Remove-spice_usb_device_get_libusb_device-from-spice.patch',
-               'spice-gtk/0003-Use-memcpy-for-write_-int-uint-64-on-ARM.patch',
-               'spice-gtk/0004-Remove-set_va_display_hook-symbol-from-linker-files.patch']
+#    patches = ['spice-gtk/0001-Remove-spice_usb_device_get_libusb_device-symbol-fro.patch',
+#               'spice-gtk/0002-Remove-spice_usb_device_get_libusb_device-from-spice.patch',
+#               'spice-gtk/0003-Use-memcpy-for-write_-int-uint-64-on-ARM.patch',
+#               'spice-gtk/0004-Remove-set_va_display_hook-symbol-from-linker-files.patch']
 
     files_devel = ['include/spice-client-glib-2.0',
                    'lib/pkgconfig/spice-client-glib-2.0.pc']
@@ -44,5 +45,5 @@ class Recipe(recipe.Recipe):
             self.configure_options += ' --with-gtk=no --with-coroutine=gthread '
         elif self.config.target_platform == Platform.WINDOWS:
             self.configure_options += ' --with-gtk=3.0 --enable-spicy=yes'
-#            self.configure_options += ' --enable-usb-redir --with-usb-ids-path=./usb.ids'
+            self.configure_options += ' --enable-usb-redir --with-usb-ids-path=./usb.ids'
             self.configure_options += ' CPPFLAGS=" -DWIN32_LEAN_AND_MEAN ${CPPFLAGS}"'
