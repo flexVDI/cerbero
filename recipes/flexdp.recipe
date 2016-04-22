@@ -9,4 +9,6 @@ class Recipe(recipe.Recipe):
     remotes = {'origin': 'https://git.flexvdi.com/scm/flexvdi/flexdp.git'}
     commit = '2.2.3'
 
+    deps = ['spice-protocol'] 
+
     autoreconf = True
