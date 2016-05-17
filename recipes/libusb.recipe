@@ -10,7 +10,7 @@ class Recipe(recipe.Recipe):
     remotes = {'origin': 'git://github.com/libusb/libusb.git'}
 
     config_sh = 'sh autogen.sh'
-    configure_options = ' --enable-usb-dk'
+    configure_options = ' --enable-usbdk'
 
     files_libs = ['libusb-1.0']
     files_devel = ['include/libusb-1.0/libusb',
