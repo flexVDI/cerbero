@@ -26,7 +26,8 @@ class Recipe(recipe.Recipe):
     patches = ['spice-gtk/0001-Remove-spice_usb_device_get_libusb_device-symbol-fro.patch',
                'spice-gtk/0002-Remove-spice_usb_device_get_libusb_device-from-spice.patch',
                'spice-gtk/0003-Use-memcpy-for-write_-int-uint-64-on-ARM.patch',
-               'spice-gtk/0004-Remove-set_va_display_hook-symbol-from-linker-files.patch']
+               'spice-gtk/0004-Remove-set_va_display_hook-symbol-from-linker-files.patch',
+               'spice-gtk/0005-spice-channel.c-Fix-alignment-issues-on-ARMv7.patch']
 
     files_devel = ['include/spice-client-glib-2.0',
                    'lib/pkgconfig/spice-client-glib-2.0.pc']
