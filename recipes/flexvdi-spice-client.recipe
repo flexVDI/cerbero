@@ -4,10 +4,10 @@
 class Recipe(recipe.Recipe):
 
     name = 'flexvdi-spice-client'
-    version = '2.2.3'
+    version = '2.2.5'
     licenses = [License.LGPLv2_1]
     remotes = {'origin': 'https://git.flexvdi.com/scm/flexvdi/flexvdi-spice-client.git'}
-    commit = '2.2.3'
+    commit = 'dfd15cc6882919d4a8d5626a7b7ba7683daf9bc7'
     btype = BuildType.CMAKE
 
     deps = ['flexdp', 'glib', 'poppler', 'spice-gtk', 'cairo']
