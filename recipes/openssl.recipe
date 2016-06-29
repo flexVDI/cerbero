@@ -59,8 +59,6 @@ class Recipe(recipe.Recipe):
             print('Recipe does not support platform: '  + self.config.target_platform + " Exiting");
             sys.exit();
 
-        self.configure_options += ' shared'
-
     @modify_environment
     def configure(self):
         # OpenSSL guesses the libdir incorrectly on x86_64
@@ -68,7 +66,7 @@ class Recipe(recipe.Recipe):
             ' --libdir=lib' + self.config.lib_suffix
         if self.config.target_platform == Platform.IOS:
             config_sh += ' no-shared no-dso '
-        if self.config.target_platform == Platform.ANDROID:
+        elif self.config.target_platform == Platform.ANDROID:
             config_sh += ' no-dso '
         else:
             config_sh += ' shared ' 
