@@ -3,8 +3,8 @@
 
 class Recipe(recipe.Recipe):
     name = 'spiceglue'
-    version = '2.2.28'
-    commit = 'winClientv2.2.28'
+    version = '2.2.36'
+    commit = 'winClientv2.2.36'
     remotes = {'origin': 'https://github.com/flexvdi/spiceglue'}
 
     autoreconf = True 
@@ -20,7 +20,7 @@ class Recipe(recipe.Recipe):
 
     def prepare(self):
         if self.config.target_platform != Platform.WINDOWS:
-            self.configure_options += ' --disable-printing --disable-usbredir'
+            self.configure_options += ' --disable-printing --disable-usbredir --disable-clipboard'
         else:
             self.append_env['CFLAGS'] = ' -O2 -fPIC'
 
