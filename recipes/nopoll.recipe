@@ -13,9 +13,12 @@ class Recipe(recipe.Recipe):
                    'lib/pkgconfig/nopoll.pc']
 
     files_libs = ['libnopoll']
+    configure_options = '--disable-nopoll-doc'
 
     def prepare(self):
         if self.config.target_platform == Platform.WINDOWS:
-            self.configure_options += 'CPPFLAGS=" -DWIN32_LEAN_AND_MEAN ${CPPFLAGS}"'
+            self.configure_options += ' CPPFLAGS=" -DWIN32_LEAN_AND_MEAN ${CPPFLAGS}"'
             if self.config.target_arch == Architecture.X86:
                  self.configure_options += ' LDFLAGS="${LDFLAGS} -lws2_32"'
+        else:
+            self.configure_options += ' CFLAGS=-D_GNU_SOURCE'
