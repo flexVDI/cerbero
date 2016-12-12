@@ -55,6 +55,11 @@ class Recipe(recipe.Recipe):
                 self.openssl_platform = ' mingw64'
                 self.make += ' CROSS_COMPILE=x86_64-w64-mingw32-'
                 self.make_install += ' CROSS_COMPILE=x86_64-w64-mingw32-'
+        elif self.config.target_platform == Platform.LINUX:
+            if self.config.target_arch == Architecture.X86:
+                self.openssl_platform = 'linux-elf'
+            elif self.config.target_arch == Architecture.X86_64:
+                self.openssl_platform = 'linux-x86_64'
         else:
             print('Recipe does not support platform: '  + self.config.target_platform + " Exiting");
             sys.exit();
