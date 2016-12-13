@@ -1,0 +1,17 @@
+# -*- Mode: Python -*- vi:si:et:sw=4:sts=4:ts=4:syntax=python
+
+
+class Recipe(recipe.Recipe):
+    name = 'viubo-server'
+    version = 'beta-0.7'
+    licenses = [License.GPLv2]
+    remotes = {'origin': 'https://git.flexvdi.com/scm/viubo/viubo-server.git'}
+    commit = 'origin/master'
+    autoreconf = True
+    autoreconf_sh = 'sh ./autogen.sh'
+
+    deps = ['json-glib', 'glib', 'qt5', 'spice-server-viubo', 'breakpad', 'spice-protocol' ]
+    new_env = { 'PKG_CONFIG_PATH': '/usr/local/lib/pkgconfig:/usr/local/share/pkgconfig:/usr/lib/pkgconfig:/usr/share/pkgconfig' }
+
+    def prepare(self):
+        pass
