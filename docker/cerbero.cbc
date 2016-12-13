@@ -1,0 +1,23 @@
+import os
+from cerbero.config import Platform, Architecture, Distro
+
+packages_prefix = 'gstreamer-sdk'
+packager = 'GStreamer SDK packagers <packages@gstreamer.com>'
+
+git_root = "git://anongit.freedesktop.org/gstreamer-sdk"
+
+# Uncomment to allow parallel builds
+allow_parallel_build = True
+
+# Uncomment this to allow cross-building for another architecture
+# target_arch = Architecture.X86_64
+
+distro_packages_install = False
+local_sources = "/home/javi/src"
+sources = "/home/javi/build"
+cache_file = "/home/javi/build/build.cache"
+build_tools_sources = "/home/javi/build/build-tools"
+build_tools_cache = "/home/javi/build/build-tools.cache"
+prefix = "/usr/local"
+build_tools_prefix = prefix
+
