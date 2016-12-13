@@ -1,0 +1,24 @@
+# -*- Mode: Python -*- vi:si:et:sw=4:sts=4:ts=4:syntax=python
+
+class Recipe(recipe.Recipe):
+    name = 'qt5'
+    version = '5.4.2'
+    stype = SourceType.TARBALL
+    btype = BuildType.MAKEFILE
+    url = 'http://download.qt.io/archive/qt/5.4/5.4.2/single/qt-everywhere-opensource-src-5.4.2.tar.xz'
+    tarball_dirname = "qt-everywhere-opensource-src-5.4.2"
+    licenses = [License.LGPLv3]
+    configure_tpl = "./configure -prefix %(prefix)s -libdir %(libdir)s %(options)s"
+    configure_options = "-release -opensource -confirm-license -c++11 -shared -no-qml-debug -system-zlib " \
+                        "-no-mtdev -no-journald -system-libpng -system-libjpeg -system-freetype -system-harfbuzz " \
+                        "-openssl -qt-pcre -system-xcb -qt-xkbcommon -xinput2 -no-xcb-xlib -glib " \
+                        "-no-pulseaudio -no-alsa -no-gtkstyle -nomake examples -nomake tests -l iconv " \
+                        "-gui -widgets -no-rpath -no-nis -no-cups -iconv -evdev -no-icu -fontconfig -strip -no-pch " \
+                        "-no-dbus -no-eglfs -no-directfb -no-linuxfb -no-kms -xcb -no-opengl -system-proxies " \
+                        "-skip qtmultimedia -skip qtwebengine -xkb-config-root /usr/share/X11/xkb " \
+                        "-no-use-gold-linker"
+
+    deps = [ "zlib", "libpng", "libjpeg-turbo", "freetype", "harfbuzz", "openssl", "glib", "libiconv", "fontconfig" ]
+
+    def prepare(self):
+        self.new_env['LD'] = os.environ.get('CXX', 'g++')
