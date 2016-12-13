@@ -1,0 +1,17 @@
+# -*- Mode: Python -*- vi:si:et:sw=4:sts=4:ts=4:syntax=python
+
+
+class Recipe(recipe.Recipe):
+    name = 'breakpad'
+    version = 'chrome_53'
+    licenses = [License.LGPLv2_1]
+    remotes = {'origin': 'https://chromium.googlesource.com/breakpad/breakpad'}
+    commit = 'origin/master'
+
+    # Download extra code through autoreconf step
+    autoreconf = True
+    autoreconf_sh = 'cd src/third_party; git clone https://chromium.googlesource.com/linux-syscall-support lss'
+
+    def prepare(self):
+        if self.config.target_platform == Platform.LINUX:
+            self.configure_options += ' --disable-processor --disable-tools'
