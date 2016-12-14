@@ -20,5 +20,7 @@ class Recipe(recipe.Recipe):
 
     deps = [ "zlib", "libpng", "libjpeg-turbo", "freetype", "harfbuzz", "openssl", "glib", "libiconv", "fontconfig" ]
 
+    files_libs = [ 'libQt5Widgets', 'libQt5Gui', 'libQt5Network', 'libQt5Core' ]
+
     def prepare(self):
         self.new_env['LD'] = os.environ.get('CXX', 'g++')

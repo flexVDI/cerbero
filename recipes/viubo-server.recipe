@@ -13,5 +13,8 @@ class Recipe(recipe.Recipe):
     deps = ['json-glib', 'glib', 'qt5', 'spice-server-viubo', 'breakpad', 'spice-protocol' ]
     new_env = { 'PKG_CONFIG_PATH': '/usr/local/lib/pkgconfig:/usr/local/share/pkgconfig:/usr/lib/pkgconfig:/usr/share/pkgconfig' }
 
+    files_bins = ['viubo-server', 'viubo-server-gui']
+    files_libs = ['libviubo_display_linux']
+
     def prepare(self):
         pass
