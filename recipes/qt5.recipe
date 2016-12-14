@@ -11,12 +11,11 @@ class Recipe(recipe.Recipe):
     configure_tpl = "./configure -prefix %(prefix)s -libdir %(libdir)s %(options)s"
     configure_options = "-release -opensource -confirm-license -c++11 -shared -no-qml-debug -system-zlib " \
                         "-no-mtdev -no-journald -system-libpng -system-libjpeg -system-freetype -system-harfbuzz " \
-                        "-openssl -qt-pcre -system-xcb -qt-xkbcommon -xinput2 -no-xcb-xlib -glib " \
+                        "-openssl -qt-pcre -qt-xcb -qt-xkbcommon -glib " \
                         "-no-pulseaudio -no-alsa -no-gtkstyle -nomake examples -nomake tests -l iconv " \
                         "-gui -widgets -no-rpath -no-nis -no-cups -iconv -evdev -no-icu -fontconfig -strip -no-pch " \
-                        "-no-dbus -no-eglfs -no-directfb -no-linuxfb -no-kms -xcb -no-opengl -system-proxies " \
-                        "-skip qtmultimedia -skip qtwebengine -xkb-config-root /usr/share/X11/xkb " \
-                        "-no-use-gold-linker"
+                        "-no-dbus -no-eglfs -no-directfb -no-linuxfb -no-kms -no-opengl -system-proxies " \
+                        "-skip qtmultimedia -skip qtwebengine -xkb-config-root /usr/share/X11/xkb "
 
     deps = [ "zlib", "libpng", "libjpeg-turbo", "freetype", "harfbuzz", "openssl", "glib", "libiconv", "fontconfig" ]
 
