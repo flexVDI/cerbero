@@ -1,6 +1,7 @@
 FROM jcelaya/debian:6-x86_64
 ARG uid=1000
-ARG user_name=javi
+ARG user_name
+RUN test -n "$user_name" || { echo "user_name must be defined" >&2 ; exit 1; }
 ARG user_group=users
 RUN apt-get update && apt-get install -y \
     sudo vim git wget fuse-utils \
