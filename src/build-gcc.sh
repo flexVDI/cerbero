@@ -8,12 +8,6 @@ SRC=`readlink -e "$SRC"`
 NP=`grep processor /proc/cpuinfo | wc -l`
 ARCH=`if file /bin/ls | grep -q "32-bit"; then echo i686; else echo x86_64; fi`
 
-gitclone() {
-    local url="$1"
-    local dst="$2"
-    test -d "$dst" || git clone "$url" "$dst"
-}
-
 getarchive() {
     local url="$1"
     local ar="$2"
@@ -39,17 +33,37 @@ autotools_configure() {
     test -f Makefile || $src/configure "$@"
 }
 
-GCC_VER=gcc-4.8.5
-GCC_AR=${GCC_VER}.tar.bz2
-GCC_URL=ftp://ftp.lip6.fr/pub/gcc/releases/$GCC_VER/$GCC_AR
-CONFIG_OPTS="--enable-languages=c,c++ --enable-shared --enable-multiarch --enable-linker-build-id --with-system-zlib --without-included-gettext --enable-threads=posix --enable-nls --with-arch-32=i686 --with-tune=generic --enable-checking=release"
-if [ "$ARCH" == i686 ]; then
-   CONFIG_OPTS="$CONFIG_OPTS --build=i686-linux-gnu --host=i686-linux-gnu --target=i686-linux-gnu"
-fi
+# gcc
+(
+    GCC_VER=gcc-4.8.5
+    GCC_AR=${GCC_VER}.tar.bz2
+    GCC_URL=ftp://ftp.lip6.fr/pub/gcc/releases/$GCC_VER/$GCC_AR
+    CONFIG_OPTS="--enable-languages=c,c++ --enable-shared --enable-multiarch --enable-linker-build-id --with-system-zlib --without-included-gettext --enable-threads=posix --enable-nls --with-arch-32=i686 --with-tune=generic --enable-checking=release"
+    if [ "$ARCH" == i686 ]; then
+        CONFIG_OPTS="$CONFIG_OPTS --build=i686-linux-gnu --host=i686-linux-gnu --target=i686-linux-gnu"
+    fi
 
-getarchive $GCC_URL $SRC/$GCC_AR $SRC/$GCC_VER
-setdst $GCC_VER
-autotools_configure $SRC/$GCC_VER $CONFIG_OPTS
-test -f gcc/xgcc || make -j$NP
-test /usr/local/bin/gcc -nt gcc/xgcc || make install
+    getarchive $GCC_URL $SRC/$GCC_AR $SRC/$GCC_VER
+    setdst $GCC_VER
+    autotools_configure $SRC/$GCC_VER $CONFIG_OPTS
+    test -f gcc/xgcc || make -j$NP
+    test /usr/local/bin/gcc -nt gcc/xgcc || make install
+)
+
+# binutils
+(
+    BINUTILS_VER=binutils-2.27
+    BINUTILS_AR=${BINUTILS_VER}.tar.bz2
+    BINUTILS_URL=https://ftp.gnu.org/gnu/binutils/$BINUTILS_AR
+    CONFIG_OPTS="--enable-gold=yes"
+    if [ "$ARCH" == i686 ]; then
+        CONFIG_OPTS="$CONFIG_OPTS --build=i686-linux-gnu --host=i686-linux-gnu --target=i686-linux-gnu"
+    fi
+
+    getarchive $BINUTILS_URL $SRC/$BINUTILS_AR $SRC/$BINUTILS_VER
+    setdst $BINUTILS_VER
+    autotools_configure $SRC/$BINUTILS_VER $CONFIG_OPTS
+    test -f ld/ld-new || make -j$NP
+    test /usr/local/bin/ld -nt ld/ld-new || make install
+)
 
