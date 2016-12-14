@@ -31,7 +31,7 @@ RUN cd $HOME && git clone https://github.com/flexVDI/cerbero.git
 RUN mkdir -p $HOME/bin && cd $HOME/bin && ln -s $HOME/cerbero/cerbero-uninstalled cerbero
 RUN echo "target_arch = Architecture.X86_64" >> $HOME/.cerbero/cerbero.cbc
 RUN git config --global user.name $user_name
-RUN git config --global credential.helper 'cache --timeout=864000'
+RUN git config --global credential.helper store
 RUN wget https://github.com/probonopd/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage \
     -O $HOME/bin/appimagetool && chmod 755 $HOME/bin/appimagetool
 CMD [ "/bin/bash", "-i" ]
