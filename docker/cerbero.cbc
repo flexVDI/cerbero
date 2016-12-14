@@ -1,10 +1,9 @@
 import os
 from cerbero.config import Platform, Architecture, Distro
 
-packages_prefix = 'gstreamer-sdk'
-packager = 'GStreamer SDK packagers <packages@gstreamer.com>'
-
-git_root = "git://anongit.freedesktop.org/gstreamer-sdk"
+packages_prefix = ''
+packager = 'Javier Celaya <javier.celaya@viubo.com>'
+git_root = "https://github.com/flexVDI"
 
 # Uncomment to allow parallel builds
 allow_parallel_build = True
