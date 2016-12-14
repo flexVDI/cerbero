@@ -23,9 +23,7 @@ RUN chown -R $user_name:$user_group $HOME
 # Cerbero dependencies
 RUN apt-get install -y \
     python python-argparse python-pyparsing cmake libfuse-dev libglib2.0-dev texinfo gtk-doc-tools \
-    flex bison python-dev libxcb-damage0-dev libxcb-shm0-dev libxcb-xfixes0-dev libxcb-xtest0-dev \
-    libxcb-keysyms1-dev libxcb-image0-dev libxcb-icccm1-dev libxcb-sync0-dev libxcb-shape0-dev \
-    libxcb-randr0-dev libxcb-render-util0-dev libxi-dev
+    flex bison python-dev libxcb-damage0-dev libxcb-shm0-dev libxcb-xfixes0-dev libxcb-xtest0-dev libxi-dev
 RUN ln -s /usr/bin/python2.6 /usr/bin/python2
 
 USER $user_name
