@@ -1,4 +1,6 @@
 # -*- Mode: Python -*- vi:si:et:sw=4:sts=4:ts=4:syntax=python
+from cerbero.utils import shell
+from cerbero.build.source import Git
 
 
 class Recipe(recipe.Recipe):
@@ -8,10 +10,14 @@ class Recipe(recipe.Recipe):
     remotes = {'origin': 'https://chromium.googlesource.com/breakpad/breakpad'}
     commit = 'origin/master'
 
-    # Download extra code through autoreconf step
-    autoreconf = True
-    autoreconf_sh = 'cd src/third_party; git clone https://chromium.googlesource.com/linux-syscall-support lss'
+    # Download extra code
+    def extract(self):
+        if Git.extract(self):
+            shell.call('cd src/third_party; git clone https://chromium.googlesource.com/linux-syscall-support lss',
+                       self.config_src_dir)
+            return True
+        return False
 
     def prepare(self):
         if self.config.target_platform == Platform.LINUX:
-            self.configure_options += ' --disable-processor --disable-tools'
+            self.configure_options += ' --disable-processor'
