@@ -10,5 +10,6 @@ docker run -it --rm \
     -v /home/javi/build/linux-portable/${arch}-target:/usr/local \
     -e DISPLAY=$DISPLAY \
     -v /tmp/.X11-unix:/tmp/.X11-unix \
+    -v /etc/localtime:/etc/localtime:ro \
     -e TERM=$TERM \
     linux-portable-$arch
