@@ -14,10 +14,11 @@ ENV HOME /home/$user_name
 RUN useradd -d $HOME -g $user_group -M -u $uid -s /bin/bash $user_name
 RUN echo $user_name "ALL=(ALL:ALL) NOPASSWD: ALL" >> /etc/sudoers
 RUN sed -i 's/\(^fuse:.*\)/\1'${user_name}'/' /etc/group
-RUN mkdir $HOME
+RUN mkdir -p $HOME/bin
 ADD bashrc $HOME/.bashrc
 ADD cerbero.cbc $HOME/.cerbero/cerbero.cbc
 RUN sed -i 's;/home/user;'${HOME}';' $HOME/.cerbero/cerbero.cbc
+ADD appimagetool-x86_64.AppImage $HOME/bin/appimagetool
 RUN chown -R $user_name:$user_group $HOME
 
 # Cerbero dependencies
@@ -31,7 +32,6 @@ RUN echo "arch = target_arch = Architecture.X86_64" >> $HOME/.cerbero/cerbero.cb
 RUN echo 'build = "x86_64-linux-gnu"' >> $HOME/.cerbero/cerbero.cbc
 RUN git config --global user.name $user_name
 RUN git config --global credential.helper store
-RUN wget https://github.com/probonopd/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage \
-    -O $HOME/bin/appimagetool && chmod 755 $HOME/bin/appimagetool
+RUN chmod 755 $HOME/bin/*
 CMD [ "/bin/bash", "-i" ]
 
