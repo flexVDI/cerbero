@@ -1,0 +1,22 @@
+# -*- Mode: Python -*- vi:si:et:sw=4:sts=4:ts=4:syntax=python
+
+
+class Recipe(recipe.Recipe):
+    name = 'Python27'
+    version = '2.7.13'
+    stype = SourceType.TARBALL
+    url = 'https://www.python.org/ftp/python/%(version)s/Python-%(version)s.tar.xz'
+    tarball_dirname = 'Python-%(version)s'
+    # Python Software Foundation License
+    licenses = [License.BSD_like]
+    deps = ['libffi', 'sqlite']
+    configure_options = '--enable-loadable-sqlite-extensions --enable-shared '
+
+    def post_install(self):
+        # Make sure it is the default python in our environment
+        try:
+            os.symlink(os.path.join(self.config.prefix, "bin", "python2"),
+                       os.path.join(self.config.prefix, "bin", "python"))
+        except OSError:
+            pass
+        shell.call("sudo ldconfig", self.build_dir)
