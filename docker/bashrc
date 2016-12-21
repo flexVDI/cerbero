@@ -7,5 +7,6 @@ alias ls='ls $LS_OPTIONS'
 alias rm='rm -i'
 alias cp='cp -i'
 alias mv='mv -i'
+alias cerbero="$HOME/src/cerbero/cerbero-uninstalled"
 cd
 
