@@ -33,3 +33,5 @@ class Recipe(recipe.Recipe):
     def prepare(self):
         if not self.config.variants.x11:
             self.configure_options += ' --without-x '
+        if self.config.target_platform == Platform.LINUX:
+            self.use_system_libs = True

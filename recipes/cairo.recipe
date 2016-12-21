@@ -53,3 +53,5 @@ class Recipe(recipe.Recipe):
             self.configure_options += '--without-x '
         if self.config.target_platform == Platform.DARWIN:
             self.configure_options += ' --enable-quartz-font --enable-quartz-image'
+        if self.config.target_platform == Platform.LINUX:
+            self.use_system_libs = True

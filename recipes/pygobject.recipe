@@ -53,3 +53,5 @@ class Recipe(recipe.Recipe):
         else:
             self.deps.append('py2cairo')
             self.configure_options = '--with-python=python2'
+        if self.config.target_platform == Platform.LINUX:
+            self.use_system_libs = True
