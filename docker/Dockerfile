@@ -22,9 +22,12 @@ ADD appimagetool-x86_64.AppImage $HOME/bin/appimagetool
 RUN chown -R $user_name:$user_group $HOME
 
 # Cerbero dependencies
+RUN echo "deb http://archive.debian.org/debian-backports squeeze-backports main" >> /etc/apt/sources.list
+RUN apt-get -o Acquire::Check-Valid-Until=false update
 RUN apt-get install -y \
     python python-argparse python-pyparsing cmake libfuse-dev libglib2.0-dev texinfo gtk-doc-tools \
-    flex bison python-dev libxcb-damage0-dev libxcb-shm0-dev libxcb-xfixes0-dev libxcb-xtest0-dev libxi-dev
+    flex bison python-dev libxcb-damage0-dev libxcb-shm0-dev libxcb-xfixes0-dev libxcb-xtest0-dev libxi-dev \
+    libdbus-1-dev libxtst-dev libegl1-mesa-dev
 RUN ln -s /usr/bin/python2.6 /usr/bin/python2
 
 USER $user_name

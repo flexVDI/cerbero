@@ -1,3 +1,4 @@
 docker/Dockerfile.i686
+docker/appimagetool*
 *.swp
 src/*
