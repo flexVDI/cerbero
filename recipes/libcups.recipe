@@ -1,0 +1,14 @@
+# -*- Mode: Python -*- vi:si:et:sw=4:sts=4:ts=4:syntax=python
+
+
+class Recipe(recipe.Recipe):
+    name = 'libcups'
+    version = '2.1.4'
+    licenses = [License.GPLv2]
+    stype = SourceType.TARBALL
+    url = 'https://github.com/apple/cups/archive/release-%(version)s.tar.gz'
+    tarball_dirname = 'cups-release-%(version)s'
+    deps = [ 'openssl' ]
+
+    make = 'make libs'
+    make_install = 'make install-libs install-headers'

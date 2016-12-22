@@ -10,7 +10,12 @@ class Recipe(recipe.Recipe):
     commit = 'dfd15cc6882919d4a8d5626a7b7ba7683daf9bc7'
     btype = BuildType.CMAKE
 
-    deps = ['flexdp', 'glib', 'poppler', 'spice-gtk', 'cairo']
+    deps = ['flexdp', 'glib', 'spice-gtk' ]
+    platform_deps = {
+        Platform.WINDOWS: [ 'poppler', 'cairo' ],
+        Platform.LINUX: [ 'libcups' ],
+        Platform.DARWIN: [ 'libcups' ]
+    }
 
     def prepare(self):
         self.append_env['CFLAGS'] = " ${LDFLAGS} "
