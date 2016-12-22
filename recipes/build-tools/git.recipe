@@ -1,0 +1,12 @@
+# -*- Mode: Python -*- vi:si:et:sw=4:sts=4:ts=4:syntax=python
+
+
+class Recipe(recipe.Recipe):
+    name = 'git'
+    version = '2.10.2'
+    licenses = [License.GPLv2]
+    stype = SourceType.TARBALL
+    url='https://github.com/git/git/archive/v2.10.2.tar.gz'
+    autoreconf = True
+    autoreconf_sh = 'make configure'
+    deps = [ 'libcurl' ]
