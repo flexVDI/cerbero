@@ -1,33 +1,29 @@
 # -*- Mode: Python -*- vi:si:et:sw=4:sts=4:ts=4:syntax=python
 
-# You are required to manually install pyparsing in your system
-
 class Recipe(recipe.Recipe):
     name = 'spice-gtk'
     version = 'flexvdi-2.2.2'
-    stype = SourceType.TARBALL
-
-    url = 'http://depot.flexvdi.com/sources/spice-gtk-flexvdi-2.2.2.tgz'
-# git repo not usable. 2 levels of recursive submodules are not supported by cerbero
-
+    remotes = {'origin': 'https://git.flexvdi.com/scm/flexvdi/spice-gtk.git'}
+    commit = 'origin/master'
     # either LGPLv2.1 or MPLv1.1
     licenses = [License.LGPLv2_1]
-
-#   Autoreconf working on windows, and hopefully, everywhere
     autoreconf = True 
-    autoreconf_sh = 'mkdir spice-common/spice-protocol/m4; gtkdocize; export ACLOCAL="$ACLOCAL $ACLOCAL_FLAGS"; autoreconf -fiv; intltoolize -f --copy'
+    autoreconf_sh = 'NOCONFIGURE=1 ./autogen.sh'
+    make_check = None
 
     deps = ['glib', 'libpng', 'zlib', 'pixman', 'fontconfig', 'freetype', 'gtk-doc-lite',
-            'nopoll', 'gstreamer-1.0', 'gst-plugins-base-1.0', 'libjpeg-turbo', 'opus']
+            'spice-protocol', 'nopoll', 'gstreamer-1.0', 'gst-plugins-base-1.0', 'libjpeg-turbo',
+            'opus', 'pyparsing', 'six']
     platform_deps = {
-            Platform.WINDOWS: [ 'gtk+3', 'librsvg']}
-# Still without usb 'libusb', 'usbredir',
+            Platform.WINDOWS: [ 'gtk+3', 'librsvg' ],
+            Platform.LINUX: [ 'gtk+3', 'usbredir' ]
+            }
 
-    patches = ['spice-gtk/0001-Remove-spice_usb_device_get_libusb_device-symbol-fro.patch',
-               'spice-gtk/0002-Remove-spice_usb_device_get_libusb_device-from-spice.patch',
-               'spice-gtk/0003-Use-memcpy-for-write_-int-uint-64-on-ARM.patch',
-               'spice-gtk/0004-Remove-set_va_display_hook-symbol-from-linker-files.patch',
-               'spice-gtk/0005-spice-channel.c-Fix-alignment-issues-on-ARMv7.patch']
+#    patches = ['spice-gtk/0001-Remove-spice_usb_device_get_libusb_device-symbol-fro.patch',
+#               'spice-gtk/0002-Remove-spice_usb_device_get_libusb_device-from-spice.patch',
+#               'spice-gtk/0003-Use-memcpy-for-write_-int-uint-64-on-ARM.patch',
+#               'spice-gtk/0004-Remove-set_va_display_hook-symbol-from-linker-files.patch',
+#               'spice-gtk/0005-spice-channel.c-Fix-alignment-issues-on-ARMv7.patch']
 
     files_devel = ['include/spice-client-glib-2.0',
                    'lib/pkgconfig/spice-client-glib-2.0.pc']
@@ -35,15 +31,18 @@ class Recipe(recipe.Recipe):
     files_libs = ['libspice-client-glib-2.0']
 
     def prepare(self):
-
-        self.configure_options += ' --enable-static --disable-werror --disable-smartcard'
+        self.configure_options += ' --disable-werror --disable-smartcard'
         self.configure_options += ' --disable-controller --with-audio=gstreamer '
 
         if self.config.target_platform in [Platform.IOS, 
                                           Platform.DARWIN,
                                           Platform.ANDROID]:
-            self.configure_options += ' --with-gtk=no --with-coroutine=gthread '
+            self.configure_options += ' --enable-static --with-gtk=no --with-coroutine=gthread '
         elif self.config.target_platform == Platform.WINDOWS:
-            self.configure_options += ' --with-gtk=3.0 --enable-spicy=yes'
+            self.configure_options += ' --enable-static --with-gtk=3.0 --enable-spicy=yes'
 #            self.configure_options += ' --enable-usb-redir --with-usb-ids-path=./usb.ids'
             self.configure_options += ' CPPFLAGS=" -DWIN32_LEAN_AND_MEAN ${CPPFLAGS}"'
+        elif self.config.target_platform == Platform.LINUX:
+            self.use_system_libs = True
+            self.configure_options += ' --with-gtk=3.0 --enable-spicy=no --disable-vala'
+            self.configure_options += ' --enable-usb-redir --with-usb-ids-path=./usb.ids'
