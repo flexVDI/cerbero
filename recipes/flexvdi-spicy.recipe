@@ -25,3 +25,5 @@ class Recipe(recipe.Recipe):
     def install(self):
         shutil.copy(os.path.join(self.spice_gtk_build_dir, "src", "flexvdi", "spicy"),
                     os.path.join(self.config.prefix, "bin", "spicy-flexvdi"))
+        shutil.copytree(os.path.join(self.spice_gtk_build_dir, "icons", "flexvdi"),
+                        os.path.join(self.config.prefix, "share", "icons", "flexvdi"))
