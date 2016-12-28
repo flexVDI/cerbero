@@ -1,0 +1,17 @@
+# -*- Mode: Python -*- vi:si:et:sw=4:sts=4:ts=4:syntax=python
+
+
+class Recipe(recipe.Recipe):
+    name = 'flexvdi-linux-client'
+    version = '2.2.7'
+    licenses = [License.LGPLv2_1]
+    remotes = {'origin': 'https://git.flexvdi.com/scm/flexvdi/launcher-python.git'}
+    commit = 'origin/master'
+    btype = BuildType.CUSTOM
+
+    deps = ['Python27', 'pygobject', 'gtk+3', 'flexvdi-spicy']
+
+    def install(self):
+        shell.call('python setup.py install --root root', self.build_dir)
+        shell.call('./build-appimage.sh root/opt/flexvdi-client {}/bin/spicy-flexvdi'.format(self.config.prefix),
+                   self.build_dir)
