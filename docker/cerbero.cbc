@@ -19,5 +19,5 @@ build_tools_sources = "/home/javi/build/build-tools"
 build_tools_cache = "/home/javi/build/build-tools.cache"
 prefix = "/usr/local"
 build_tools_prefix = prefix
-extra_build_tools = [ 'cmake', 'git' ]
+extra_build_tools = [ 'gcc-native', 'binutils-native', 'cmake', 'git' ]
 
