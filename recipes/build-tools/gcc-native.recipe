@@ -1,0 +1,33 @@
+# -*- Mode: Python -*- vi:si:et:sw=4:sts=4:ts=4:syntax=python
+import os
+
+
+class Recipe(recipe.Recipe):
+    name = 'gcc-native'
+    version = '4.8.5'
+    licenses = [License.GPLv2]
+    stype = SourceType.TARBALL
+    tarball_dirname = 'gcc-{0}'.format(version)
+    url = 'ftp://ftp.lip6.fr/pub/gcc/releases/{0}/{0}.tar.bz2'.format(tarball_dirname)
+    configure_options = '--enable-languages=c,c++ ' \
+                        '--enable-shared ' \
+                        '--disable-multiarch ' \
+                        '--disable-multilib ' \
+                        '--enable-linker-build-id ' \
+                        '--with-system-zlib '\
+                        '--without-included-gettext ' \
+                        '--enable-threads=posix ' \
+                        '--enable-nls ' \
+                        '--with-tune=generic ' \
+                        '--enable-checking=release'
+    use_system_libs = True
+    requires_non_src_build = True
+    add_host_build_target = True
+
+    def prepare(self):
+        if self.config.target_platform == Platform.LINUX:
+            try:
+                os.makedirs(os.path.join(self.config.prefix, 'lib'))
+                os.symlink('lib', os.path.join(self.config.prefix, 'lib64'))
+            except:
+                pass
