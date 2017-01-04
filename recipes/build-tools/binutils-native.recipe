@@ -1,0 +1,16 @@
+# -*- Mode: Python -*- vi:si:et:sw=4:sts=4:ts=4:syntax=python
+
+
+class Recipe(recipe.Recipe):
+    name = 'binutils-native'
+    version = '2.27'
+    licenses = [License.GPLv2]
+    stype = SourceType.TARBALL
+    tarball_dirname = 'binutils-{0}'.format(version)
+    url = 'https://ftp.gnu.org/gnu/binutils/{0}.tar.bz2'.format(tarball_dirname)
+    configure_options = '--enable-gold=yes --with-system-zlib --enable-plugins'
+    use_system_libs = True
+    requires_non_src_build = True
+    add_host_build_target = True
+
+
