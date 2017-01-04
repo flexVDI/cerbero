@@ -10,6 +10,7 @@ class Recipe(recipe.Recipe):
     use_system_libs = True
     patches = ['libepoxy/0001-Fix-aclocal-problems.patch']
     deps = []
+    platform_deps = {Platform.LINUX: ['xorg-macros']}
 
     files_libs = ['libepoxy']
     files_devel  = ['include/epoxy', 'lib/pkgconfig/epoxy.pc']
