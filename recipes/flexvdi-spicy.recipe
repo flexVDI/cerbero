@@ -13,10 +13,8 @@ class Recipe(recipe.Recipe):
 
     deps = ['flexvdi-spice-client', 'spice-gtk']
 
-    def prepare(self):
-        self.spice_gtk_build_dir = glob.glob(os.path.join(self.config.sources, "spice-gtk*"))[0]
-
     def extract(self):
+        self.spice_gtk_build_dir = glob.glob(os.path.join(self.config.sources, "spice-gtk*"))[0]
         shutil.rmtree(os.path.join(self.spice_gtk_build_dir, "src", "flexvdi"))
 
     def compile(self):
