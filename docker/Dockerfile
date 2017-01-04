@@ -34,6 +34,7 @@ USER $user_name
 RUN echo "arch = target_arch = Architecture.X86_64" >> $HOME/.cerbero/cerbero.cbc
 RUN echo 'build = "x86_64-linux-gnu"' >> $HOME/.cerbero/cerbero.cbc
 RUN git config --global user.name $user_name
+RUN git config --global user.email $user_name@linux-portable
 RUN git config --global credential.helper store
 RUN chmod 755 $HOME/bin/*
 CMD [ "/bin/bash", "-i" ]
