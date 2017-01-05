@@ -13,6 +13,10 @@ class Recipe(recipe.Recipe):
     config_sh = 'cmake .'
     configure_tpl = "%(config-sh)s"
 
+    def prepare(self):
+        if self.config.target_platform == Platform.LINUX and self.config.target_arch == Architecture.X86:
+            self.config_sh += "; sed -i 's/^ARCH=.*/ARCH=i686/' binary-dependencies/bundle"
+
     def install(self):
         try:
             os.remove(os.path.join (self.config.prefix, "bin", "AppImageAssistant"))
