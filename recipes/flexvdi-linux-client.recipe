@@ -13,5 +13,5 @@ class Recipe(recipe.Recipe):
 
     def install(self):
         shell.call('python setup.py install --root root', self.build_dir)
-        shell.call('./build-appimage.sh root/opt/flexvdi-client {}/bin/spicy-flexvdi'.format(self.config.prefix),
+        shell.call('./build-appimage.sh root/opt/flexvdi-client {0}/bin/spicy-flexvdi'.format(self.config.prefix),
                    self.build_dir)
