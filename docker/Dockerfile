@@ -9,18 +9,6 @@ RUN apt-get update && apt-get install -y \
     autoconf automake libtool gettext pkg-config \
     zlib1g-dev
 
-# Create current user
-ENV HOME /home/$user_name
-RUN useradd -d $HOME -g $user_group -M -u $uid -s /bin/bash $user_name
-RUN echo $user_name "ALL=(ALL:ALL) NOPASSWD: ALL" >> /etc/sudoers
-RUN sed -i 's/\(^fuse:.*\)/\1'${user_name}'/' /etc/group
-RUN mkdir -p $HOME/bin
-ADD bashrc $HOME/.bashrc
-ADD cerbero.cbc $HOME/.cerbero/cerbero.cbc
-RUN sed -i 's;/home/user;'${HOME}';' $HOME/.cerbero/cerbero.cbc
-ADD appimagetool-x86_64.AppImage $HOME/bin/appimagetool
-RUN chown -R $user_name:$user_group $HOME
-
 # Cerbero dependencies
 RUN echo "deb http://archive.debian.org/debian-backports squeeze-backports main" >> /etc/apt/sources.list
 RUN apt-get -o Acquire::Check-Valid-Until=false update
@@ -29,6 +17,18 @@ RUN apt-get install -y \
     flex bison python-dev libxcb-damage0-dev libxcb-shm0-dev libxcb-xfixes0-dev libxcb-xtest0-dev libxi-dev \
     libdbus-1-dev libxtst-dev libegl1-mesa-dev libudev-dev libtext-csv-perl libxrender-dev python-setuptools
 RUN ln -s /usr/bin/python2.6 /usr/bin/python2
+
+# Create current user
+ENV HOME /home/$user_name
+RUN useradd -d $HOME -g $user_group -M -u $uid -s /bin/bash $user_name
+RUN echo $user_name "ALL=(ALL:ALL) NOPASSWD: ALL" >> /etc/sudoers
+RUN sed -i 's/\(^fuse:.*\)/\1'${user_name}'/' /etc/group
+RUN mkdir -p $HOME/bin
+ADD appimagetool-x86_64.AppImage $HOME/bin/appimagetool
+ADD bashrc $HOME/.bashrc
+ADD cerbero.cbc $HOME/.cerbero/cerbero.cbc
+RUN sed -i 's;/home/user;'${HOME}';' $HOME/.cerbero/cerbero.cbc
+RUN chown -R $user_name:$user_group $HOME
 
 USER $user_name
 RUN echo "arch = target_arch = Architecture.X86_64" >> $HOME/.cerbero/cerbero.cbc
