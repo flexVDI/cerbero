@@ -10,6 +10,7 @@ allow_parallel_build = True
 
 # Uncomment this to allow cross-building for another architecture
 # target_arch = Architecture.X86_64
+variants = [ 'alsa' ]
 
 distro_packages_install = False
 local_sources = "/home/javi/src"
