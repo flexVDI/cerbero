@@ -5,7 +5,8 @@ docker run -it --rm \
     --privileged \
     -h squeeze-$arch \
     --name squeeze-$arch \
-    -v /home/javi/src/linux-portable/src:/home/javi/src \
+    -v /home/javi/src/cerbero:/home/javi/cerbero \
+    -v /home/javi/build/linux-portable/src:/home/javi/src \
     -v /home/javi/build/linux-portable/${arch}-build:/home/javi/build \
     -v /home/javi/build/linux-portable/${arch}-target:/usr/local \
     -e DISPLAY=$DISPLAY \

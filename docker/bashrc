@@ -1,6 +1,6 @@
 PS1='\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
 export SHELL=/bin/bash
-export LS_OPTIONS='--color=auto -l'
+export LS_OPTIONS='-l --color=auto'
 export PATH=${HOME}/bin:$PATH
 export LD_LIBRARY_PATH=/usr/local/lib
 eval "`dircolors`"
@@ -8,6 +8,6 @@ alias ls='ls $LS_OPTIONS'
 alias rm='rm -i'
 alias cp='cp -i'
 alias mv='mv -i'
-alias cerbero="/usr/bin/python $HOME/src/cerbero/cerbero-uninstalled"
+alias cerbero="/usr/bin/python $HOME/cerbero/cerbero-uninstalled"
 cd
 
