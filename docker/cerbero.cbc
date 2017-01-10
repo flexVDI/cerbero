@@ -19,6 +19,7 @@ cache_file = "/home/javi/build/build.cache"
 build_tools_sources = "/home/javi/build/build-tools"
 build_tools_cache = "/home/javi/build/build-tools.cache"
 prefix = "/usr/local"
+py_prefix = "lib/python2.7"
 build_tools_prefix = prefix
 extra_build_tools = [ 'gcc-native', 'binutils-native', 'cmake', 'git' ]
 
