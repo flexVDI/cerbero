@@ -19,4 +19,3 @@ class Recipe(recipe.Recipe):
                        os.path.join(self.config.prefix, "bin", "python"))
         except OSError:
             pass
-        shell.call("sudo ldconfig", self.build_dir)
