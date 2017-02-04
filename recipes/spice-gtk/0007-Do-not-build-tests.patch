@@ -1,0 +1,25 @@
+From ba7c256a33ee2962d9418526e4bcad30db2c5d42 Mon Sep 17 00:00:00 2001
+From: Javier Celaya <javier.celaya@flexvdi.com>
+Date: Sat, 4 Feb 2017 10:26:39 +0100
+Subject: [PATCH] Do not build tests
+
+---
+ configure.ac | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/configure.ac b/configure.ac
+index 1692bb6..11f3248 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -751,7 +751,7 @@ AC_SUBST(SPICE_GTK_REQUIRES)
+ 
+ m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES([yes])])
+ 
+-AM_CONDITIONAL([BUILD_TESTS], [test x"$enable_static" = xyes])
++AM_CONDITIONAL([BUILD_TESTS], [false])
+ 
+ AC_OUTPUT([
+ Makefile
+-- 
+2.5.5
+
