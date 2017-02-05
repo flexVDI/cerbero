@@ -1,8 +1,4 @@
 FROM jcelaya/debian:6-x86_64
-ARG uid=1000
-ARG user_name
-RUN test -n "$user_name" || { echo "user_name must be defined" >&2 ; exit 1; }
-ARG user_group=users
 RUN apt-get update && apt-get install -y \
     sudo vim git wget fuse-utils \
     libgmp3-dev libmpfr-dev libmpc-dev libc6-dev-i386 \
@@ -19,24 +15,15 @@ RUN apt-get install -y \
     strace libasound2-dev libxcursor-dev
 RUN ln -s /usr/bin/python2.6 /usr/bin/python2
 
-# Create current user
-ENV HOME /home/$user_name
-RUN useradd -d $HOME -g $user_group -M -u $uid -s /bin/bash $user_name
-RUN echo $user_name "ALL=(ALL:ALL) NOPASSWD: ALL" >> /etc/sudoers
-RUN sed -i 's/\(^fuse:.*\)/\1'${user_name}'/' /etc/group
-RUN mkdir -p $HOME/bin
-ADD appimagetool-x86_64.AppImage $HOME/bin/appimagetool
-ADD bashrc $HOME/.bashrc
-ADD cerbero.cbc $HOME/.cerbero/cerbero.cbc
-RUN sed -i 's;/home/user;'${HOME}';' $HOME/.cerbero/cerbero.cbc
-RUN chown -R $user_name:$user_group $HOME
-
-USER $user_name
-RUN echo "arch = target_arch = Architecture.X86_64" >> $HOME/.cerbero/cerbero.cbc
-RUN echo 'build = "x86_64-linux-gnu"' >> $HOME/.cerbero/cerbero.cbc
-RUN git config --global user.name $user_name
-RUN git config --global user.email $user_name@linux-portable
-RUN git config --global credential.helper store
-RUN chmod 755 $HOME/bin/*
-CMD [ "/bin/bash", "-i" ]
+# Pre-setup user cerbero
+RUN echo "cerbero ALL=(ALL:ALL) NOPASSWD: ALL" >> /etc/sudoers
+ADD appimagetool-x86_64.AppImage /home/cerbero/bin/appimagetool
+ADD bashrc /home/cerbero/.bash_profile
+ADD gitconfig /home/cerbero/.gitconfig
+ADD cerbero.cbc /home/cerbero/.cerbero/cerbero.cbc
+RUN echo "arch = target_arch = Architecture.X86_64" >> /home/cerbero/.cerbero/cerbero.cbc
+RUN echo 'build = "x86_64-linux-gnu"' >> /home/cerbero/.cerbero/cerbero.cbc
+ADD setup_user.sh /root/setup_user.sh
+RUN chmod 755 /home/cerbero/bin/* /root/setup_user.sh
+CMD [ "/root/setup_user.sh" ]
 
