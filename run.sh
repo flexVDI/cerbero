@@ -3,6 +3,9 @@ SRC=`readlink -e $0`
 SRCDIR=`dirname "$SRC"`
 BUILDDIR=`pwd`
 BUILDDIR=`readlink -e "$BUILDDIR"`
+if [ "$BUILDDIR" == "$SRCDIR" ]; then
+    BUILDDIR="$BUILDDIR"/build
+fi
 arch=${1:-x86_64}
 
 set -e
@@ -31,14 +34,15 @@ esac
 
 docker build -t linux-portable-$arch -f "$DOCKERFILE" "$SRCDIR"/docker
 
+mkdir -p "$BUILDDIR"/{src,${arch}-build,${arch}-target}
 docker run -it --rm \
     --privileged \
     -h squeeze-$arch \
     --name squeeze-$arch \
     -v /home/javi/src/cerbero:/home/cerbero/cerbero:ro \
-    -v /home/javi/build/linux-portable/src:/home/cerbero/src \
-    -v /home/javi/build/linux-portable/${arch}-build:/home/cerbero/build \
-    -v /home/javi/build/linux-portable/${arch}-target:/usr/local \
+    -v "$BUILDDIR"/src:/home/cerbero/src \
+    -v "$BUILDDIR"/${arch}-build:/home/cerbero/build \
+    -v "$BUILDDIR"/${arch}-target:/usr/local \
     -e DISPLAY=$DISPLAY \
     -v /tmp/.X11-unix:/tmp/.X11-unix \
     -v /etc/localtime:/etc/localtime:ro \
