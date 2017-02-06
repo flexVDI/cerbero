@@ -39,7 +39,7 @@ docker run -it --rm \
     --privileged \
     -h squeeze-$arch \
     --name squeeze-$arch \
-    -v /home/javi/src/cerbero:/home/cerbero/cerbero:ro \
+    -v "$SRCDIR"/..:/home/cerbero/cerbero:ro \
     -v "$BUILDDIR"/src:/home/cerbero/src \
     -v "$BUILDDIR"/${arch}-build:/home/cerbero/build \
     -v "$BUILDDIR"/${arch}-target:/usr/local \
