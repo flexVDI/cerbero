@@ -15,7 +15,7 @@ class Recipe(recipe.Recipe):
             'spice-protocol', 'nopoll', 'gstreamer-1.0', 'gst-plugins-base-1.0', 'libjpeg-turbo',
             'opus', 'pyparsing', 'six']
     platform_deps = {
-            Platform.WINDOWS: [ 'gtk+3', 'librsvg' ],
+            Platform.WINDOWS: [ 'usbredir' ],
             Platform.LINUX: [ 'gtk+3', 'usbredir', 'librsvg' ]
             }
 
@@ -40,8 +40,8 @@ class Recipe(recipe.Recipe):
                                           Platform.ANDROID]:
             self.configure_options += ' --enable-static --with-gtk=no --with-coroutine=gthread '
         elif self.config.target_platform == Platform.WINDOWS:
-            self.configure_options += ' --enable-static --with-gtk=3.0 --enable-spicy=yes'
-#            self.configure_options += ' --enable-usb-redir --with-usb-ids-path=./usb.ids'
+            self.configure_options += ' --with-gtk=no'
+            self.configure_options += ' --enable-usb-redir --with-usb-ids-path=./usb.ids'
             self.configure_options += ' CPPFLAGS=" -DWIN32_LEAN_AND_MEAN ${CPPFLAGS}"'
         elif self.config.target_platform == Platform.LINUX:
             self.use_system_libs = True
