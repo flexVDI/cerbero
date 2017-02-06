@@ -5,7 +5,7 @@ docker run -it --rm \
     --privileged \
     -h squeeze-$arch \
     --name squeeze-$arch \
-    -v /home/javi/src/cerbero:/home/cerbero/cerbero \
+    -v /home/javi/src/cerbero:/home/cerbero/cerbero:ro \
     -v /home/javi/build/linux-portable/src:/home/cerbero/src \
     -v /home/javi/build/linux-portable/${arch}-build:/home/cerbero/build \
     -v /home/javi/build/linux-portable/${arch}-target:/usr/local \
@@ -15,3 +15,4 @@ docker run -it --rm \
     -e TERM=$TERM \
     -e LOCAL_UID=`id -u` -e LOCAL_GID=`id -g` \
     linux-portable-$arch
+
