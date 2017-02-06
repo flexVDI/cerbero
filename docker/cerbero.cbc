@@ -2,7 +2,7 @@ import os
 from cerbero.config import Platform, Architecture, Distro
 
 packages_prefix = ''
-packager = 'Javier Celaya <javier.celaya@viubo.com>'
+packager = 'Cerbero User <cerbero@viubo.com>'
 git_root = "https://github.com/flexVDI"
 
 # Uncomment to allow parallel builds
