@@ -1,0 +1,6 @@
+[user]
+        name = cerbero
+        email = cerbero@flexvdi.com
+[credential]
+        helper = cache --timeout 864000
+
