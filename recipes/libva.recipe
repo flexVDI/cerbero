@@ -1,0 +1,16 @@
+# -*- Mode: Python -*- vi:si:et:sw=4:sts=4:ts=4:syntax=python
+
+
+class Recipe(recipe.Recipe):
+
+    name = 'libva'
+    version = '1.7.3'
+    licenses = [License.LGPLv2_1Plus]
+    commit = 'libva-{0}'.format(version)
+    remotes = {'origin': 'https://github.com/01org/libva.git'}
+
+    config_sh = './autogen.sh'
+    configure_options = '--with-drivers-path=/usr/lib/dri --disable-dummy-driver'
+    use_system_libs = True
+    deps = []
+
