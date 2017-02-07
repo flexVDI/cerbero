@@ -46,3 +46,6 @@ class Recipe(recipe.Recipe):
             self.configure_options += ' --with-gtk=3.0 --enable-spicy=no --disable-vala'
             self.configure_options += ' --enable-usb-redir --with-usb-ids-path=./usb.ids'
             self.patches.append('spice-gtk/0002-use-alsasink-instead-of-autoaudiosink.patch')
+            if self.config.variants.va:
+                self.configure_options += ' --enable-va'
+                self.deps += ['libva']
