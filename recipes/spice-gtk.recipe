@@ -19,12 +19,7 @@ class Recipe(recipe.Recipe):
             Platform.LINUX: [ 'gtk+3', 'usbredir', 'librsvg' ]
             }
 
-#    patches = ['spice-gtk/0001-Remove-spice_usb_device_get_libusb_device-symbol-fro.patch',
-#               'spice-gtk/0002-Remove-spice_usb_device_get_libusb_device-from-spice.patch',
-#               'spice-gtk/0003-Use-memcpy-for-write_-int-uint-64-on-ARM.patch',
-#               'spice-gtk/0004-Remove-set_va_display_hook-symbol-from-linker-files.patch',
-#               'spice-gtk/0005-spice-channel.c-Fix-alignment-issues-on-ARMv7.patch']
-    patches = ['spice-gtk/0007-Do-not-build-tests.patch']
+    patches = ['spice-gtk/0001-Do-not-build-tests.patch']
 
     files_devel = ['include/spice-client-glib-2.0',
                    'lib/pkgconfig/spice-client-glib-2.0.pc']
@@ -39,6 +34,9 @@ class Recipe(recipe.Recipe):
                                           Platform.DARWIN,
                                           Platform.ANDROID]:
             self.configure_options += ' --enable-static --with-gtk=no --with-coroutine=gthread '
+            self.patches += ['spice-gtk/0003-Remove-spice_usb_device_get_libusb_device-symbol-fro.patch',
+                             'spice-gtk/0004-Remove-spice_usb_device_get_libusb_device-from-spice.patch',
+                             'spice-gtk/0005-Remove-set_va_display_hook-symbol-from-linker-files.patch']
         elif self.config.target_platform == Platform.WINDOWS:
             self.configure_options += ' --with-gtk=no'
             self.configure_options += ' --enable-usb-redir --with-usb-ids-path=./usb.ids'
@@ -47,4 +45,4 @@ class Recipe(recipe.Recipe):
             self.use_system_libs = True
             self.configure_options += ' --with-gtk=3.0 --enable-spicy=no --disable-vala'
             self.configure_options += ' --enable-usb-redir --with-usb-ids-path=./usb.ids'
-            self.patches.append('spice-gtk/0006-use-alsasink-instead-of-autoaudiosink.patch')
+            self.patches.append('spice-gtk/0002-use-alsasink-instead-of-autoaudiosink.patch')
