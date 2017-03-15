@@ -1,0 +1,13 @@
+# -*- Mode: Python -*- vi:si:et:sw=4:sts=4:ts=4:syntax=python
+
+
+class Recipe(recipe.Recipe):
+    name = 'json-c'
+    version = '0.11'
+    stype = SourceType.TARBALL
+    url = 'https://s3.amazonaws.com/json-c_releases/releases/json-c-%(version)s.tar.gz'
+    # either LGPLv2.1 or MPLv1.1
+    licenses = License.PUBLIC_DOMAIN
+    deps = []
+    configure_options = '--disable-oldname-compat'
+
