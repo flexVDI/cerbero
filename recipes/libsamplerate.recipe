@@ -1,0 +1,12 @@
+# -*- Mode: Python -*- vi:si:et:sw=4:sts=4:ts=4:syntax=python
+
+
+class Recipe(recipe.Recipe):
+    name = 'libsamplerate'
+    version = '0.1.9'
+    stype = SourceType.TARBALL
+    url = 'http://www.mega-nerd.com/SRC/libsamplerate-0.1.9.tar.gz'
+    # either LGPLv2.1 or MPLv1.1
+    licenses = License.PUBLIC_DOMAIN
+    deps = []
+
