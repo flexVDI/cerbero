@@ -1,0 +1,12 @@
+# -*- Mode: Python -*- vi:si:et:sw=4:sts=4:ts=4:syntax=python
+
+
+class Recipe(recipe.Recipe):
+    name = 'libsndfile'
+    version = '1.0.20'
+    stype = SourceType.TARBALL
+    url = 'http://www.mega-nerd.com/libsndfile/files/libsndfile-%(version)s.tar.gz'
+    # either LGPLv2.1 or MPLv1.1
+    licenses = License.PUBLIC_DOMAIN
+    deps = []
+
