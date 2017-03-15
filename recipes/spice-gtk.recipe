@@ -12,11 +12,10 @@ class Recipe(recipe.Recipe):
     make_check = None
 
     deps = ['glib', 'libpng', 'zlib', 'pixman', 'fontconfig', 'freetype', 'gtk-doc-lite',
-            'spice-protocol', 'nopoll', 'gstreamer-1.0', 'gst-plugins-base-1.0', 'libjpeg-turbo',
-            'opus', 'pyparsing', 'six']
+            'spice-protocol', 'nopoll', 'libjpeg-turbo', 'opus', 'pyparsing', 'six']
     platform_deps = {
             Platform.WINDOWS: [ 'usbredir' ],
-            Platform.LINUX: [ 'gtk+3', 'usbredir', 'librsvg' ]
+            Platform.LINUX: [ 'gtk+3', 'usbredir', 'librsvg', 'pulseaudio' ]
             }
 
     patches = ['spice-gtk/0001-Do-not-build-tests.patch']
@@ -28,7 +27,12 @@ class Recipe(recipe.Recipe):
 
     def prepare(self):
         self.configure_options += ' --disable-werror --disable-smartcard'
-        self.configure_options += ' --disable-controller --with-audio=gstreamer '
+        self.configure_options += ' --disable-controller'
+        if self.config.target_platform == Platform.LINUX:
+            self.configure_options += ' --with-audio=pulse'
+        else:
+            self.configure_options += ' --with-audio=gstreamer'
+            self.deps += ['gstreamer-1.0', 'gst-plugins-base-1.0']
 
         if self.config.target_platform in [Platform.IOS, 
                                           Platform.DARWIN,
@@ -45,7 +49,6 @@ class Recipe(recipe.Recipe):
             self.use_system_libs = True
             self.configure_options += ' --with-gtk=3.0 --enable-spicy=no --disable-vala'
             self.configure_options += ' --enable-usb-redir --with-usb-ids-path=./usb.ids'
-            self.patches.append('spice-gtk/0002-use-alsasink-instead-of-autoaudiosink.patch')
             if self.config.variants.va:
                 self.configure_options += ' --enable-va'
                 self.deps += ['libva']
