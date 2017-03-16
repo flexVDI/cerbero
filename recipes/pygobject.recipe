@@ -51,7 +51,6 @@ class Recipe(recipe.Recipe):
             self.deps.append('pycairo')
             self.configure_options = '--with-python=python3'
         else:
-            self.deps.append("Python27")
             self.deps.append('py2cairo')
             self.configure_options = '--with-python=python2'
         if self.config.target_platform == Platform.LINUX:

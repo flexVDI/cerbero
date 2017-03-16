@@ -9,7 +9,7 @@ class Recipe(recipe.Recipe):
     commit = '2.2.9'
     btype = BuildType.CUSTOM
 
-    deps = ['Python27', 'pygobject', 'gtk+3', 'flexvdi-spicy']
+    deps = ['pygobject', 'gtk+3', 'flexvdi-spicy']
 
     def install(self):
         shell.call('python setup.py install --root root', self.build_dir)
