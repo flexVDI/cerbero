@@ -1,0 +1,13 @@
+# -*- Mode: Python -*- vi:si:et:sw=4:sts=4:ts=4:syntax=python
+
+
+class Recipe(recipe.Recipe):
+    name = 'libdrm'
+    version = '2.4.75'
+    stype = SourceType.TARBALL
+    url = 'https://dri.freedesktop.org/libdrm/libdrm-%(version)s.tar.bz2'
+    # either LGPLv2.1 or MPLv1.1
+    licenses = License.PUBLIC_DOMAIN
+    deps = []
+    use_system_libs = True
+

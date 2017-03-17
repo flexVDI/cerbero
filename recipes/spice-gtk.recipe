@@ -51,4 +51,4 @@ class Recipe(recipe.Recipe):
             self.configure_options += ' --enable-usb-redir --with-usb-ids-path=./usb.ids'
             if self.config.variants.va:
                 self.configure_options += ' --enable-va'
-                self.deps += ['libva']
+                self.deps += ['libva-intel-driver']
