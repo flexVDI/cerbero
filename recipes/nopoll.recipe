@@ -3,11 +3,17 @@
 
 class Recipe(recipe.Recipe):
     name = 'nopoll'
-    version = '0.2.7'
-    commit = 'origin/master'
-    remotes = {'origin': 'https://github.com/flexvdi/nopoll'}
+    version = '0.4.3'
+    commit = '914a6b8'
+    remotes = {'origin': 'https://github.com/ASPLes/nopoll.git'}
     licenses = [License.LGPLv2_1]
+    config_sh = './autogen.sh'
     deps = ['openssl']
+    patches = ['nopoll/0001-Set-errno-in-Windows-too.patch',
+               'nopoll/0002-Set-errno-to-EWOULDBLOCK-when-there-is-no-full-messa.patch',
+               'nopoll/0003-Remove-retry-loops-and-return-EWOULDBLOCK.patch',
+               'nopoll/0004-Return-3-if-PING-was-the-only-frame-received.patch',
+               'nopoll/0005-Do-not-warn-about-unfinished-frames.patch']
 
     files_devel = ['include/nopoll',
                    'lib/pkgconfig/nopoll.pc']
@@ -15,10 +21,3 @@ class Recipe(recipe.Recipe):
     files_libs = ['libnopoll']
     configure_options = '--disable-nopoll-doc'
 
-    def prepare(self):
-        if self.config.target_platform == Platform.WINDOWS:
-            self.configure_options += ' CPPFLAGS=" -DWIN32_LEAN_AND_MEAN ${CPPFLAGS}"'
-            if self.config.target_arch == Architecture.X86:
-                 self.configure_options += ' LDFLAGS="${LDFLAGS} -lws2_32"'
-        else:
-            self.configure_options += ' CFLAGS=-D_GNU_SOURCE'

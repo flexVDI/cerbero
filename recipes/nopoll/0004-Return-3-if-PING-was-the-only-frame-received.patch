@@ -1,0 +1,71 @@
+From a8fd746278b75b848d8653c5db409c3b7d964c29 Mon Sep 17 00:00:00 2001
+From: Javier Celaya <javier.celaya@flexvdi.com>
+Date: Thu, 22 Dec 2016 10:32:01 +0100
+Subject: [PATCH 4/5] Return -3 if PING was the only frame received
+
+---
+ src/nopoll_conn.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
+
+diff --git a/src/nopoll_conn.c b/src/nopoll_conn.c
+index 7c1969f..e2475cd 100644
+--- a/src/nopoll_conn.c
++++ b/src/nopoll_conn.c
+@@ -3685,6 +3685,7 @@ int           nopoll_conn_read (noPollConn * conn, char * buffer, int bytes, nop
+ 	int                amount;
+ 	int                total_read = 0;
+ 	int                total_pending = 0;
++	int                error_result = -1;
+ 
+ 	/* report error value */
+ 	if (conn == NULL || buffer == NULL || bytes <= 0)
+@@ -3765,7 +3766,7 @@ int           nopoll_conn_read (noPollConn * conn, char * buffer, int bytes, nop
+ 			        nopoll_log (conn->ctx, NOPOLL_LEVEL_CRITICAL, "Received websocket conn-id=%d close during wait reply..",
+ 					    conn->id);
+ 				if (total_read == 0 && ! block)
+-					return -1;
++					return error_result;
+ 				return total_read;
+ 			} /* end if */
+ 
+@@ -3776,7 +3777,7 @@ int           nopoll_conn_read (noPollConn * conn, char * buffer, int bytes, nop
+ #elif defined(NOPOLL_OS_WIN32)
+ 					WSASetLastError(NOPOLL_EWOULDBLOCK); /* simulate there is no data available */
+ #endif
+-					return -1;
++					return error_result;
+                                 }
+ 				return total_read;
+ 			} /* end if */
+@@ -3790,8 +3791,9 @@ int           nopoll_conn_read (noPollConn * conn, char * buffer, int bytes, nop
+ 				/* call to send pong */
+ 				nopoll_conn_send_pong (conn, nopoll_msg_get_payload_size (msg), (noPollPtr)nopoll_msg_get_payload (msg));
+ 				nopoll_msg_unref (msg);
++				error_result = -3;
+ 				continue;
+-			} /* end if */
++			} else error_result = -1;
+ 
+ 			/* get the amount of bytes we can read */
+ 			amount = nopoll_msg_get_payload_size (msg);
+@@ -3825,7 +3827,7 @@ int           nopoll_conn_read (noPollConn * conn, char * buffer, int bytes, nop
+ 					    block, bytes, total_read);
+ 
+ 				if (total_read == 0 && ! block) 
+-					return -1;
++					return error_result;
+ 				return total_read;
+ 			}
+ 		}
+@@ -3852,7 +3854,7 @@ int           nopoll_conn_read (noPollConn * conn, char * buffer, int bytes, nop
+ 		    timeout, bytes, total_read);
+ 
+ 	if (total_read == 0 && ! block)
+-		return -1;
++		return error_result;
+ 	return total_read;
+ }
+ 
+-- 
+2.9.3
+
