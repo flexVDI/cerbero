@@ -3,8 +3,8 @@
 
 class Recipe(recipe.Recipe):
     name = 'spiceglue'
-    version = '2.2.36'
-    commit = 'winClientv2.2.36'
+    version = '2.2'
+    commit = 'winClientv2.2.44'
     remotes = {'origin': 'https://github.com/flexvdi/spiceglue'}
 
     autoreconf = True 
