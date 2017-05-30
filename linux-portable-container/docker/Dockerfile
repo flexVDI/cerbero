@@ -1,4 +1,5 @@
 FROM jcelaya/debian:6-x86_64
+RUN sed -i 's/.*security.debian.org.*/#&/' /etc/apt/sources.list
 RUN apt-get update && apt-get install -y \
     sudo vim git wget fuse-utils \
     libgmp3-dev libmpfr-dev libmpc-dev libc6-dev-i386 \
