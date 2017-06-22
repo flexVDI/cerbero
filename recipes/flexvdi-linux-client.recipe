@@ -3,10 +3,10 @@
 
 class Recipe(recipe.Recipe):
     name = 'flexvdi-linux-client'
-    version = '2.2.11'
+    version = '2.2.12-2'
     licenses = [License.LGPLv2_1]
     remotes = {'origin': 'https://git.flexvdi.com/scm/flexvdi/launcher-python.git'}
-    commit = '2.2.11'
+    commit = version
     btype = BuildType.CUSTOM
 
     deps = ['pygobject', 'gtk+3', 'flexvdi-spicy']
