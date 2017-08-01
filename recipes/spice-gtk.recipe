@@ -19,7 +19,7 @@ class Recipe(recipe.Recipe):
             }
 
     patches = ['spice-gtk/0001-Do-not-build-tests.patch',
-               'spice-gtk/0006-Add-m4-path-for-autoreconf.patch']
+               'spice-gtk/0002-Add-m4-path-for-autoreconf.patch']
 
     files_devel = ['include/spice-client-glib-2.0',
                    'lib/pkgconfig/spice-client-glib-2.0.pc']
@@ -39,9 +39,7 @@ class Recipe(recipe.Recipe):
                                           Platform.DARWIN,
                                           Platform.ANDROID]:
             self.configure_options += ' --enable-static --with-gtk=no --with-coroutine=gthread '
-            self.patches += ['spice-gtk/0003-Remove-spice_usb_device_get_libusb_device-symbol-fro.patch',
-                             'spice-gtk/0004-Remove-spice_usb_device_get_libusb_device-from-spice.patch',
-                             'spice-gtk/0005-Remove-set_va_display_hook-symbol-from-linker-files.patch']
+            self.patches += ['spice-gtk/0003-Remove-missing-symbols-from-export-files.patch']
         elif self.config.target_platform == Platform.WINDOWS:
             self.configure_options += ' --with-gtk=no'
             self.configure_options += ' --enable-usbredir --with-usb-ids-path=./usb.ids'
