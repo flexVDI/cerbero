@@ -20,7 +20,9 @@ class Recipe(recipe.Recipe):
 
     def prepare(self):
         if self.config.target_platform != Platform.WINDOWS:
-            self.configure_options += ' --disable-printing --disable-usbredir --disable-clipboard'
+            self.configure_options += ' --disable-printing --disable-usbredir'
+            if self.config.target_platform != Platform.DARWIN:
+                self.configure_options += ' --disable-clipboard'
         else:
             self.append_env['CFLAGS'] = ' -O2 -fPIC'
 
