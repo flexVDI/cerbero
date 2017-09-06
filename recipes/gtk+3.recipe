@@ -109,6 +109,7 @@ class Recipe(recipe.Recipe):
             self.configure_options += '--enable-quartz-backend '
             # this patch will break on other OSs without objective-c compiler installed
             self.patches.append('gtk+3/0001-osx-fix-build-of-quartz-input-module.patch')
+            self.patches.append('gtk+3/0002-osx-configure-fix-detecting-CUPS-2-x.patch')
         elif self.config.target_platform == Platform.LINUX:
             # Can't change CFLAGS and use configure cache
             self.can_use_configure_cache = False

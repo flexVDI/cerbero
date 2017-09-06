@@ -1,0 +1,39 @@
+From 25703284918f5d8bcafba3dc401fe160f6177006 Mon Sep 17 00:00:00 2001
+From: Misty De Meo <mistydemeo@github.com>
+Date: Mon, 21 Aug 2017 13:38:21 +0200
+Subject: [PATCH] configure: fix detecting CUPS 2.x
+
+---
+ configure    | 2 +-
+ configure.ac | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/configure b/configure
+index e6f4a08..4c361a0 100755
+--- a/configure
++++ b/configure
+@@ -25092,7 +25092,7 @@ fi
+     CUPS_API_MAJOR=`echo $ECHO_N $CUPS_API_VERSION | awk -F. '{print $1}'`
+     CUPS_API_MINOR=`echo $ECHO_N $CUPS_API_VERSION | awk -F. '{print $2}'`
+ 
+-    if test $CUPS_API_MAJOR -gt 1 -o \
++    if test $CUPS_API_MAJOR -lt 1 -o \
+             $CUPS_API_MAJOR -eq 1 -a $CUPS_API_MINOR -lt 2; then
+       as_fn_error $? "CUPS >= 1.2 not found" "$LINENO" 5
+     fi
+diff --git a/configure.ac b/configure.ac
+index a0b9c34..b2a6315 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -1438,7 +1438,7 @@ else
+     CUPS_API_MAJOR=`echo $ECHO_N $CUPS_API_VERSION | awk -F. '{print $1}'`
+     CUPS_API_MINOR=`echo $ECHO_N $CUPS_API_VERSION | awk -F. '{print $2}'`
+ 
+-    if test $CUPS_API_MAJOR -gt 1 -o \
++    if test $CUPS_API_MAJOR -lt 1 -o \
+             $CUPS_API_MAJOR -eq 1 -a $CUPS_API_MINOR -lt 2; then
+       AC_MSG_ERROR([CUPS >= 1.2 not found])
+     fi
+-- 
+2.14.1
+
