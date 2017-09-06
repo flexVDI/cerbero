@@ -15,7 +15,8 @@ class Recipe(recipe.Recipe):
             'spice-protocol', 'nopoll', 'libjpeg-turbo', 'opus', 'pyparsing', 'six']
     platform_deps = {
             Platform.WINDOWS: [ 'usbredir' ],
-            Platform.LINUX: [ 'gtk+3', 'usbredir', 'librsvg', 'pulseaudio' ]
+            Platform.LINUX: [ 'gtk+3', 'usbredir', 'librsvg', 'pulseaudio' ],
+            Platform.DARWIN: [ 'gtk+3', 'librsvg' ]
             }
 
     patches = ['spice-gtk/0001-Do-not-build-tests.patch',
@@ -38,7 +39,8 @@ class Recipe(recipe.Recipe):
         if self.config.target_platform in [Platform.IOS, 
                                           Platform.DARWIN,
                                           Platform.ANDROID]:
-            self.configure_options += ' --enable-static --with-gtk=no --with-coroutine=gthread '
+            #self.configure_options += ' --enable-static --with-gtk=no --with-coroutine=gthread '
+            self.configure_options += ' --enable-static --with-coroutine=gthread --enable-spicy=yes'
             self.patches += ['spice-gtk/0003-Remove-missing-symbols-from-export-files.patch']
         elif self.config.target_platform == Platform.WINDOWS:
             self.configure_options += ' --with-gtk=no'
