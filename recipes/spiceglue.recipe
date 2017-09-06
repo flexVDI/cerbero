@@ -15,7 +15,10 @@ class Recipe(recipe.Recipe):
     licenses = [License.LGPLv2_1]
     deps = ['spice-protocol', 'spice-gtk']
     platform_deps = {
-            Platform.WINDOWS: ['flexvdi-spice-client', 'libusb', 'usbredir']}
+            Platform.WINDOWS: ['flexvdi-spice-client', 'libusb', 'usbredir'],
+            Platform.DARWIN: ['gst-plugins-base-1.0-static', 'gst-plugins-good-1.0-static', 
+            'gst-plugins-ugly-1.0-static'
+            ]}
     files_libs = ['libspiceglue']
 
     def prepare(self):
