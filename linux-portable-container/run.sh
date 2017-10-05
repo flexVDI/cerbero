@@ -13,8 +13,11 @@ set -e
 DOCKERFILE="$SRCDIR"/docker/Dockerfile
 
 case $arch in
-    x86_64) ;;
+    x86_64)
+        alt_arch=i686
+        ;;
     i686)
+        alt_arch=x86_64
         DOCKERFILE="$DOCKERFILE".i686
         trap "rm $DOCKERFILE" EXIT
         sed -e "s/:6-x86_64/:6-i386/" \
@@ -27,6 +30,7 @@ case $arch in
     *)
         echo "WARNING: Unknown architecture $arch, using x86_64"
         arch=x86_64
+        alt_arch=i686
         ;;
 esac
 
@@ -35,6 +39,7 @@ esac
 docker build -t linux-portable-$arch -f "$DOCKERFILE" "$SRCDIR"/docker
 
 mkdir -p "$BUILDDIR"/{src,${arch}-build,${arch}-target}
+[ -S ~/.git-credential-cache/socket ] && GIT_CREDENTIAL_CACHE="-v $HOME/.git-credential-cache/socket:/home/cerbero/.git-credential-cache/socket"
 docker run -it --rm \
     --privileged \
     -h squeeze-$arch \
@@ -43,6 +48,9 @@ docker run -it --rm \
     -v "$BUILDDIR"/src:/home/cerbero/src \
     -v "$BUILDDIR"/${arch}-build:/home/cerbero/build \
     -v "$BUILDDIR"/${arch}-target:/usr/local \
+    -v "$BUILDDIR"/${alt_arch}-build:/home/cerbero/${alt_arch}-build \
+    -v "$BUILDDIR"/${alt_arch}-target:/home/cerbero/${alt_arch}-target \
+    $GIT_CREDENTIAL_CACHE \
     -e DISPLAY=$DISPLAY \
     -v /tmp/.X11-unix:/tmp/.X11-unix \
     -v /etc/localtime:/etc/localtime:ro \
