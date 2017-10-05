@@ -3,7 +3,7 @@
 
 class Recipe(recipe.Recipe):
     name = 'flexvdi-linux-client'
-    version = '2.2.12-2'
+    version = '2.2.12-3'
     licenses = [License.LGPLv2_1]
     remotes = {'origin': 'https://git.flexvdi.com/scm/flexvdi/launcher-python.git'}
     commit = version
