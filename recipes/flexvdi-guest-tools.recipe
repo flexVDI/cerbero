@@ -1,0 +1,15 @@
+# -*- Mode: Python -*- vi:si:et:sw=4:sts=4:ts=4:syntax=python
+
+
+class Recipe(recipe.Recipe):
+
+    name = 'flexvdi-guest-tools'
+    version = '3.0.0'
+    licenses = [License.LGPLv2_1]
+    remotes = {'origin': 'https://git.flexvdi.com/scm/flexvdi/flexvdi-guest-agent.git'}
+    commit = 'origin/master'
+    btype = BuildType.CMAKE
+
+    deps = ['flexdp', 'libcups', 'boost', 'spice-vdagent' ]
+
+    # TODO: build Windows version with toolchain
