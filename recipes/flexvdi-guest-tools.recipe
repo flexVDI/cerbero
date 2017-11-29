@@ -4,7 +4,7 @@
 class Recipe(recipe.Recipe):
 
     name = 'flexvdi-guest-tools'
-    version = '3.0.0'
+    version = '3.0.1'
     licenses = [License.LGPLv2_1]
     remotes = {'origin': 'https://git.flexvdi.com/scm/flexvdi/flexvdi-guest-agent.git'}
     commit = 'origin/master'
