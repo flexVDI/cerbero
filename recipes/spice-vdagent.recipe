@@ -10,7 +10,7 @@ class Recipe(recipe.Recipe):
     commit = 'origin/master'
     autoreconf = True
     autoreconf_sh = 'NOCONFIGURE=1 ./autogen.sh'
-    configure_tpl = './configure --prefix=/usr --datarootdir=%(prefix)s/lib %(options)s '
+    configure_tpl = './configure --prefix=/ --exec-prefix=/usr --datarootdir=/usr/share %(options)s '
     use_system_libs = True
     deps = [ 'spice-protocol' ]
     configure_options = '--disable-dependency-tracking'
