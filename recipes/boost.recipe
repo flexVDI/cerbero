@@ -20,4 +20,12 @@ class Recipe(recipe.Recipe):
                    self.config.prefix, ','.join(libraries)), self.build_dir)
 
     def install(self):
-        shell.call('./b2 install', self.build_dir)
+        options = ''
+        if self.config.target_platform == Platform.WINDOWS:
+            user_config = self.relative_path(self.name + '/windows.jam')
+            if self.config.target_arch == Architecture.X86:
+                toolset = 'gcc-mingw32'
+            else:
+                toolset = 'gcc-mingw64'
+            options = '--user-config={0} toolset={1} target-os=windows'.format(user_config, toolset)
+        shell.call('./b2 {0} variant=release install'.format(options), self.build_dir)
