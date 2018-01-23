@@ -12,3 +12,4 @@ class Recipe(recipe.Recipe):
     deps = ['spice-protocol'] 
 
     autoreconf = True
+    configure_tpl = './configure --prefix=%(prefix)s --datarootdir=%(prefix)s/lib %(options)s '
