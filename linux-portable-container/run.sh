@@ -20,7 +20,7 @@ case $arch in
         alt_arch=x86_64
         DOCKERFILE="$DOCKERFILE".i686
         trap "rm $DOCKERFILE" EXIT
-        sed -e "s/:6-x86_64/:6-i386/" \
+        sed -e "s/amd64/i386/" \
             -e "s/libc6-dev-i386/libc6-dev-amd64/" \
             -e "s/Architecture.X86_64/Architecture.X86/" \
             -e "s/x86_64-linux-gnu/i686-linux-gnu/" \

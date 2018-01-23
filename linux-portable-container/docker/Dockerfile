@@ -1,20 +1,13 @@
-FROM jcelaya/debian:6-x86_64
-RUN sed -i 's/.*security.debian.org.*/#&/' /etc/apt/sources.list
+FROM amd64/debian:wheezy-backports
 RUN apt-get update && apt-get install -y \
-    sudo vim git wget fuse-utils \
+    sudo vim git wget fuse-utils make gcc g++ \
     libgmp3-dev libmpfr-dev libmpc-dev libc6-dev-i386 \
     autoconf automake libtool gettext pkg-config \
-    zlib1g-dev
-
-# Cerbero dependencies
-RUN echo "deb http://archive.debian.org/debian-backports squeeze-backports main" >> /etc/apt/sources.list
-RUN apt-get -o Acquire::Check-Valid-Until=false update
-RUN apt-get install -y \
+    zlib1g-dev \
     python python-argparse python-pyparsing cmake libfuse-dev libglib2.0-dev texinfo gtk-doc-tools \
     flex bison python-dev libxcb-damage0-dev libxcb-shm0-dev libxcb-xfixes0-dev libxcb-xtest0-dev libxi-dev \
     libdbus-1-dev libxtst-dev libegl1-mesa-dev libudev-dev libtext-csv-perl libxrender-dev python-setuptools \
-    strace libasound2-dev libxcursor-dev libpciaccess-dev libxrandr-dev libxinerama-dev
-RUN ln -s /usr/bin/python2.6 /usr/bin/python2
+    strace libasound2-dev libxcursor-dev libpciaccess-dev libxrandr-dev libxinerama-dev libxv-dev
 
 # Pre-setup user cerbero
 RUN echo "cerbero ALL=(ALL:ALL) NOPASSWD: ALL" >> /etc/sudoers
