@@ -3,17 +3,14 @@
 
 class Recipe(recipe.Recipe):
     name = 'nopoll'
-    version = '0.4.3'
-    commit = '914a6b8'
+    version = '0.4.6'
+    commit = '1e15a5a'
     remotes = {'origin': 'https://github.com/ASPLes/nopoll.git'}
     licenses = [License.LGPLv2_1]
     config_sh = './autogen.sh'
     deps = ['openssl']
-    patches = ['nopoll/0001-Set-errno-in-Windows-too.patch',
-               'nopoll/0002-Set-errno-to-EWOULDBLOCK-when-there-is-no-full-messa.patch',
-               'nopoll/0003-Remove-retry-loops-and-return-EWOULDBLOCK.patch',
-               'nopoll/0004-Return-3-if-PING-was-the-only-frame-received.patch',
-               'nopoll/0005-Do-not-warn-about-unfinished-frames.patch']
+    patches = ['nopoll/0001-Return-3-if-PING-was-the-only-frame-received.patch',
+               'nopoll/0002-Do-not-warn-about-unfinished-frames.patch']
 
     files_devel = ['include/nopoll',
                    'lib/pkgconfig/nopoll.pc']

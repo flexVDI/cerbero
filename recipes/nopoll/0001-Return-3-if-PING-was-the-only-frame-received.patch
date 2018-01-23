@@ -1,17 +1,17 @@
-From a8fd746278b75b848d8653c5db409c3b7d964c29 Mon Sep 17 00:00:00 2001
+From 39ee0eb71e2dad77b82bae9399e1e4441ed724ea Mon Sep 17 00:00:00 2001
 From: Javier Celaya <javier.celaya@flexvdi.com>
 Date: Thu, 22 Dec 2016 10:32:01 +0100
-Subject: [PATCH 4/5] Return -3 if PING was the only frame received
+Subject: [PATCH 1/2] Return -3 if PING was the only frame received
 
 ---
- src/nopoll_conn.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+ src/nopoll_conn.c | 18 ++++++++++++++----
+ 1 file changed, 14 insertions(+), 4 deletions(-)
 
 diff --git a/src/nopoll_conn.c b/src/nopoll_conn.c
-index 7c1969f..e2475cd 100644
+index 9e462ac..9b8aeab 100644
 --- a/src/nopoll_conn.c
 +++ b/src/nopoll_conn.c
-@@ -3685,6 +3685,7 @@ int           nopoll_conn_read (noPollConn * conn, char * buffer, int bytes, nop
+@@ -3820,6 +3820,7 @@ int           nopoll_conn_read (noPollConn * conn, char * buffer, int bytes, nop
  	int                amount;
  	int                total_read = 0;
  	int                total_pending = 0;
@@ -19,7 +19,7 @@ index 7c1969f..e2475cd 100644
  
  	/* report error value */
  	if (conn == NULL || buffer == NULL || bytes <= 0)
-@@ -3765,7 +3766,7 @@ int           nopoll_conn_read (noPollConn * conn, char * buffer, int bytes, nop
+@@ -3900,7 +3901,7 @@ int           nopoll_conn_read (noPollConn * conn, char * buffer, int bytes, nop
  			        nopoll_log (conn->ctx, NOPOLL_LEVEL_CRITICAL, "Received websocket conn-id=%d close during wait reply..",
  					    conn->id);
  				if (total_read == 0 && ! block)
@@ -28,7 +28,7 @@ index 7c1969f..e2475cd 100644
  				return total_read;
  			} /* end if */
  
-@@ -3776,7 +3777,7 @@ int           nopoll_conn_read (noPollConn * conn, char * buffer, int bytes, nop
+@@ -3911,7 +3912,7 @@ int           nopoll_conn_read (noPollConn * conn, char * buffer, int bytes, nop
  #elif defined(NOPOLL_OS_WIN32)
  					WSASetLastError(NOPOLL_EWOULDBLOCK); /* simulate there is no data available */
  #endif
@@ -37,18 +37,23 @@ index 7c1969f..e2475cd 100644
                                  }
  				return total_read;
  			} /* end if */
-@@ -3790,8 +3791,9 @@ int           nopoll_conn_read (noPollConn * conn, char * buffer, int bytes, nop
- 				/* call to send pong */
- 				nopoll_conn_send_pong (conn, nopoll_msg_get_payload_size (msg), (noPollPtr)nopoll_msg_get_payload (msg));
- 				nopoll_msg_unref (msg);
-+				error_result = -3;
- 				continue;
--			} /* end if */
-+			} else error_result = -1;
+@@ -3920,6 +3921,15 @@ int           nopoll_conn_read (noPollConn * conn, char * buffer, int bytes, nop
  
+ 		/* get the message content into the buffer */
+ 		if (msg) {
++			if (msg->op_code == NOPOLL_PING_FRAME) {
++				nopoll_log (conn->ctx, NOPOLL_LEVEL_DEBUG, "PING received over connection id=%d, replying PONG", conn->id);
++				/* call to send pong */
++				nopoll_conn_send_pong (conn, nopoll_msg_get_payload_size (msg), (noPollPtr)nopoll_msg_get_payload (msg));
++				nopoll_msg_unref (msg);
++				error_result = -3;
++				continue;
++			} else error_result = -1;
++
  			/* get the amount of bytes we can read */
  			amount = nopoll_msg_get_payload_size (msg);
-@@ -3825,7 +3827,7 @@ int           nopoll_conn_read (noPollConn * conn, char * buffer, int bytes, nop
+ 			total_pending = bytes - total_read;
+@@ -3952,7 +3962,7 @@ int           nopoll_conn_read (noPollConn * conn, char * buffer, int bytes, nop
  					    block, bytes, total_read);
  
  				if (total_read == 0 && ! block) 
@@ -57,7 +62,7 @@ index 7c1969f..e2475cd 100644
  				return total_read;
  			}
  		}
-@@ -3852,7 +3854,7 @@ int           nopoll_conn_read (noPollConn * conn, char * buffer, int bytes, nop
+@@ -3979,7 +3989,7 @@ int           nopoll_conn_read (noPollConn * conn, char * buffer, int bytes, nop
  		    timeout, bytes, total_read);
  
  	if (total_read == 0 && ! block)
@@ -67,5 +72,5 @@ index 7c1969f..e2475cd 100644
  }
  
 -- 
-2.9.3
+2.14.3
 

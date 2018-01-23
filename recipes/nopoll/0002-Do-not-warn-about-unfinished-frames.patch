@@ -1,17 +1,17 @@
-From e3685a18025e14f06a8e2d233dcf103ffac10fcc Mon Sep 17 00:00:00 2001
+From 34b96060d1048397f96627f346b57cd28a09eca8 Mon Sep 17 00:00:00 2001
 From: Javier Celaya <javier.celaya@flexvdi.com>
 Date: Tue, 18 Apr 2017 13:05:57 +0200
-Subject: [PATCH 5/5] Do not warn about unfinished frames
+Subject: [PATCH 2/2] Do not warn about unfinished frames
 
 ---
  src/nopoll_conn.c | 10 +++++-----
  1 file changed, 5 insertions(+), 5 deletions(-)
 
 diff --git a/src/nopoll_conn.c b/src/nopoll_conn.c
-index e2475cd..0fa38af 100644
+index 9b8aeab..ba3f0bc 100644
 --- a/src/nopoll_conn.c
 +++ b/src/nopoll_conn.c
-@@ -3069,7 +3069,7 @@ noPollMsg   * nopoll_conn_get_msg (noPollConn * conn)
+@@ -3150,7 +3150,7 @@ noPollMsg   * nopoll_conn_get_msg (noPollConn * conn)
  	} /* end if */
  
  	if (conn->previous_msg) {
@@ -20,7 +20,7 @@ index e2475cd..0fa38af 100644
  			    conn->previous_msg->payload_size, conn->previous_msg->remain_bytes, conn->id);
  
  		if (conn->read_pending_header) {
-@@ -3159,7 +3159,7 @@ noPollMsg   * nopoll_conn_get_msg (noPollConn * conn)
+@@ -3240,7 +3240,7 @@ noPollMsg   * nopoll_conn_get_msg (noPollConn * conn)
  	bytes = __nopoll_conn_receive (conn, buffer, 2);
  	if (bytes == 0) {
  		/* connection not ready */
@@ -29,7 +29,7 @@ index e2475cd..0fa38af 100644
  			    conn->id, errno, strerror (errno));
  		return NULL;
  	}
-@@ -3175,7 +3175,7 @@ noPollMsg   * nopoll_conn_get_msg (noPollConn * conn)
+@@ -3256,7 +3256,7 @@ noPollMsg   * nopoll_conn_get_msg (noPollConn * conn)
  		memcpy (conn->pending_buf + conn->pending_buf_bytes, buffer, bytes);
  		conn->pending_buf_bytes += bytes;
  		
@@ -38,7 +38,7 @@ index e2475cd..0fa38af 100644
  			    "Expected to receive complete websocket frame header but found only %d bytes over conn-id=%d, saving to reuse later",
  			    bytes, conn->id);
  		return NULL;
-@@ -3332,7 +3332,7 @@ noPollMsg   * nopoll_conn_get_msg (noPollConn * conn)
+@@ -3413,7 +3413,7 @@ noPollMsg   * nopoll_conn_get_msg (noPollConn * conn)
  			/* release message because it not available here */
  			nopoll_msg_unref (msg);
  			if (bytes >= 0 && nopoll_conn_is_ok (conn)) {
@@ -47,7 +47,7 @@ index e2475cd..0fa38af 100644
  					    "Expected to receive incoming mask after header (4 bytes) but found %d bytes on conn-id=%d, saving %d for future operations ", 
  					    bytes, conn->id, conn->pending_buf_bytes);
  				return NULL;
-@@ -3391,7 +3391,7 @@ read_payload:
+@@ -3486,7 +3486,7 @@ read_payload:
  	if (msg->remain_bytes > 0) {
  
  		/* set connection in remaining data to read */
@@ -57,5 +57,5 @@ index e2475cd..0fa38af 100644
  		msg->payload_size = bytes;
  
 -- 
-2.9.3
+2.14.3
 
