@@ -15,13 +15,14 @@ class Recipe(recipe.Recipe):
 
     def extract(self):
         self.spice_gtk_build_dir = glob.glob(os.path.join(self.config.sources, "spice-gtk*"))[0]
-        shutil.rmtree(os.path.join(self.spice_gtk_build_dir, "src", "flexvdi"))
+        shutil.rmtree(os.path.join(self.spice_gtk_build_dir, "tools", "flexvdi"))
 
     def compile(self):
-        shell.call("make -C src -f Makefile.flexVDI", self.spice_gtk_build_dir)
+        self.spice_gtk_build_dir = glob.glob(os.path.join(self.config.sources, "spice-gtk*"))[0]
+        shell.call("make -C tools -f Makefile.flexVDI", self.spice_gtk_build_dir)
 
     def install(self):
-        shutil.copy(os.path.join(self.spice_gtk_build_dir, "src", "flexvdi", "spicy"),
+        shutil.copy(os.path.join(self.spice_gtk_build_dir, "tools", "flexvdi", "spicy"),
                     os.path.join(self.config.prefix, "bin", "spicy-flexvdi"))
         shutil.rmtree(os.path.join(self.config.prefix, "share", "icons", "flexvdi"))
         shutil.copytree(os.path.join(self.spice_gtk_build_dir, "icons", "flexvdi"),
