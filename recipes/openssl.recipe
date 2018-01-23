@@ -6,7 +6,7 @@ import sys
 
 class Recipe(recipe.Recipe):
     name = 'openssl'
-    version = '1.0.2g'
+    version = '1.0.2n'
     licenses = [License.BSD_like]
     stype = SourceType.TARBALL
     url = 'https://www.openssl.org/source/{0}-{1}.tar.gz'.format(name, version)
