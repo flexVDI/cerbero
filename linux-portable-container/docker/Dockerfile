@@ -24,6 +24,7 @@ ADD gitconfig /home/cerbero/.gitconfig
 ADD cerbero.cbc /home/cerbero/.cerbero/cerbero.cbc
 RUN echo "arch = target_arch = Architecture.X86_64" >> /home/cerbero/.cerbero/cerbero.cbc
 RUN echo 'build = "x86_64-linux-gnu"' >> /home/cerbero/.cerbero/cerbero.cbc
+ADD wgetrc /home/cerbero/.wgetrc
 ADD setup_user.sh /root/setup_user.sh
 RUN chmod 755 /home/cerbero/bin/* /root/setup_user.sh
 CMD [ "/root/setup_user.sh" ]
