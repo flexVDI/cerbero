@@ -2,17 +2,11 @@
 # -*- Mode: Python -*-
 
 
-class Package(package.Package):
+class Package(custom.GStreamer, package.Package):
 
     name = 'gstreamer-1.0-core'
     shortdesc = 'GStreamer 1.0 core'
     longdesc = 'GStreamer 1.0 core'
-    url = "http://gstreamer.freedesktop.org"
-    version = '1.7.0'
-    codename = 'Congo'
-    license = License.LGPL
-    vendor = 'GStreamer Project'
-    org = 'org.freedesktop.gstreamer'
     uuid = 'd9626750-e8b7-4e40-944d-98b67ed0c6bf'
     deps = ['base-system-1.0']
 
@@ -21,10 +15,14 @@ class Package(package.Package):
             'gst-plugins-good-1.0:plugins_core:lang',
             'gst-plugins-bad-1.0:plugins_core:lang:libs:typelibs',
             'gst-plugins-ugly-1.0:plugins_core:lang']
-    files_devel = ['gstreamer-1.0-static', 'gst-plugins-base-1.0-static:plugins_core_devel',
-            'gst-plugins-good-1.0-static:plugins_core_devel', 'gst-plugins-bad-1.0-static:plugins_core_devel']
+    files_devel = ['gstreamer-1.0', 'gst-plugins-base-1.0:plugins_core_devel',
+            'gst-plugins-good-1.0:plugins_core_devel', 'gst-plugins-bad-1.0:plugins_core_devel']
     platform_files = {
             Platform.DARWIN: ['gstreamer-1.0-osx-framework'],
             Platform.IOS: ['gstreamer-ios-templates'],
             Platform.ANDROID: ['gst-android-1.0'],
             }
+
+    def prepare(self):
+        if self.config.variants.unwind:
+            self.files.append('libunwind:libs')

@@ -29,7 +29,6 @@ from cerbero.utils import messages as m
 
 CONFIG_DIR = os.path.expanduser('~/.cerbero')
 CONFIG_EXT = 'cbc'
-DEFAULT_HOME = os.path.expanduser('~/cerbero')
 DEFAULT_CONFIG_FILENAME = 'cerbero.%s' % CONFIG_EXT
 DEFAULT_CONFIG_FILE = os.path.join(CONFIG_DIR, DEFAULT_CONFIG_FILENAME)
 DEFAULT_GIT_ROOT = 'git://anongit.freedesktop.org/gstreamer'
@@ -49,8 +48,8 @@ License = enums.License
 class Variants(object):
 
     __disabled_variants = ['x11', 'alsa', 'pulse', 'cdparanoia', 'v4l2', 'sdl',
-                           'gi', 'python3', 'gtk3', 'va']
-    __enabled_variants = ['debug', 'clutter', 'python', 'testspackage']
+                           'gi', 'unwind']
+    __enabled_variants = ['debug', 'python', 'testspackage']
 
     def __init__(self, variants):
         for v in self.__enabled_variants:
@@ -92,7 +91,8 @@ class Config (object):
                    'recipes_remotes', 'ios_platform', 'extra_build_tools',
                    'distro_packages_install', 'interactive',
                    'target_arch_flags', 'sysroot', 'isysroot',
-                   'extra_lib_path', 'cached_sources']
+                   'extra_lib_path', 'cached_sources', 'tools_prefix',
+                   'ios_min_version']
 
     def __init__(self):
         self._check_uninstalled()
@@ -104,6 +104,12 @@ class Config (object):
         # Store raw os.environ data
         self._raw_environ = os.environ.copy()
         self._pre_environ = os.environ.copy()
+
+    def _copy(self, arch):
+        c = copy.deepcopy(self)
+        c.target_arch = arch
+        c._raw_environ = os.environ.copy()
+        return c
 
     def load(self, filename=None):
 
@@ -117,20 +123,30 @@ class Config (object):
         # from the main configuration file
         self._load_cmd_config(filename)
 
-        # We need to set py_prefix as soon as possible
-        if "python3" in self.variants:
-            # FIXME Find a smarter way to figure out what version of python3
-            # is built.
-            self.py_prefix = 'lib/python3.3'
-
         # Create a copy of the config for each architecture in case we are
         # building Universal binaries
         if self.target_arch == Architecture.UNIVERSAL:
             arch_config = {}
-            for arch in self.universal_archs:
-                arch_config[arch] = copy.deepcopy(self)
-                arch_config[arch].target_arch = arch
-                arch_config[arch]._raw_environ = os.environ.copy()
+
+            if isinstance(self.universal_archs, list):
+                # Simple list of architectures, just duplicate all the config
+                for arch in self.universal_archs:
+                    arch_config[arch] = self._copy(arch)
+            elif isinstance(self.universal_archs, dict):
+                # Map of architectures to the corresponding config file. We
+                # do this so that we don't need to duplicate arch specific
+                # config again in the universal config.
+                for arch, config_file in self.universal_archs.items():
+                    arch_config[arch] = self._copy(arch)
+                    if config_file is not None:
+                        # This works because the override config files are
+                        # fairly light. Things break if they are more complex
+                        # as load config can have side effects in global state
+                        d = os.path.dirname(filename[0])
+                        arch_config[arch]._load_cmd_config([os.path.join(d, config_file)])
+            else:
+                raise ConfigurationError('universal_archs must be a list or a dict')
+
             self.arch_config = arch_config
 
         # Finally fill the missing gaps in the config
@@ -154,9 +170,9 @@ class Config (object):
 
         # Build variants before copying any config
         self.variants = Variants(self.variants)
-        if self.cross_compiling() and self.variants.gi:
-            m.warning(_("gobject introspection is not supported "
-                        "cross-compiling, 'gi' variant will be removed"))
+        if not self.prefix_is_executable() and self.variants.gi:
+            m.warning(_("gobject introspection requires an executable "
+                        "prefix, 'gi' variant will be removed"))
             self.variants.gi = False
 
         for c in self.arch_config.values():
@@ -234,7 +250,7 @@ class Config (object):
         path = self._join_path(
             os.path.join(self.build_tools_prefix, 'bin'), path)
 
-        if self.prefix_is_executable():
+        if not self.cross_compiling():
             ld_library_path = libdir
         else:
             ld_library_path = ""
@@ -276,14 +292,11 @@ class Config (object):
                'GSTREAMER_ROOT': prefix
                }
 
-        if self.variants.python3:
-           env['PYTHON'] = "python3"
-
         return env
 
     def load_defaults(self):
         self.set_property('cache_file', None)
-        self.set_property('home_dir', DEFAULT_HOME)
+        self.set_property('home_dir', self._default_home_dir())
         self.set_property('prefix', None)
         self.set_property('sources', None)
         self.set_property('local_sources', None)
@@ -330,7 +343,7 @@ class Config (object):
 
     def set_property(self, name, value, force=False):
         if name not in self._properties:
-            raise ConfigurationError('Unkown key %s' % name)
+            raise ConfigurationError('Unknown key %s' % name)
         if force or getattr(self, name) is None:
             setattr(self, name, value)
 
@@ -361,10 +374,20 @@ class Config (object):
         return {}
 
     def cross_compiling(self):
+        "Are we building for the host platform or not?"
+        # On Windows, building 32-bit on 64-bit is not cross-compilation since
+        # 32-bit Windows binaries run on 64-bit Windows via WOW64.
+        if self.platform == Platform.WINDOWS:
+            if self.arch == Architecture.X86_64 and \
+               self.target_arch == Architecture.X86:
+                return False
         return self.target_platform != self.platform or \
-                self.target_arch != self.arch
+                self.target_arch != self.arch or \
+                self.target_distro_version != self.distro_version
 
     def prefix_is_executable(self):
+        """Can the binaries from the target platform can be executed in the
+        build env?"""
         if self.target_platform != self.platform:
             return False
         if self.target_arch != self.arch:
@@ -373,6 +396,10 @@ class Config (object):
                 return True
             return False
         return True
+
+    def target_distro_version_gte(self, distro_version):
+        assert distro_version.startswith(self.target_distro + "_")
+        return self.target_distro_version >= distro_version
 
     def _parse(self, filename, reset=True):
         config = {'os': os, '__file__': filename}
@@ -428,18 +455,17 @@ class Config (object):
                 DEFAULT_CONFIG_FILE
             m.warning(msg)
 
-    def _load_cmd_config(self, filename):
-        if filename is not None:
+    def _load_cmd_config(self, filenames):
+        if filenames is not None:
+            for f in filenames:
+                if not os.path.exists(f):
+                    f = os.path.join(CONFIG_DIR, f + "." + CONFIG_EXT)
 
-            if not os.path.exists(filename):
-                filename = os.path.join(CONFIG_DIR, filename + "." + CONFIG_EXT)
-
-            if os.path.exists(filename):
-                self._parse(filename, reset=False)
-                self.filename = DEFAULT_CONFIG_FILE
-            else:
-                raise ConfigurationError(_("Configuration file %s doesn't "
-                                           "exists") % filename)
+                if os.path.exists(f):
+                    self._parse(f, reset=False)
+                else:
+                    raise ConfigurationError(_("Configuration file %s doesn't "
+                                               "exist") % f)
 
     def _load_platform_config(self):
         platform_config = os.path.join(self.environ_dir, '%s.config' %
@@ -490,6 +516,13 @@ class Config (object):
             p = os.path.join(self.data_dir, path)
         else:
             p = os.path.join(os.path.dirname(__file__), '..', path)
+        return os.path.abspath(p)
+
+    def _default_home_dir(self):
+        if self.uninstalled:
+            p = os.path.join(os.path.dirname(__file__), '..', 'build')
+        else:
+            p = os.path.expanduser('~/cerbero')
         return os.path.abspath(p)
 
     def _perl_version(self):

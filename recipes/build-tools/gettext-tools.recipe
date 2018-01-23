@@ -3,16 +3,19 @@ from cerbero.utils import shell
 
 class Recipe(recipe.Recipe):
     name = 'gettext-tools'
-    version = '0.19.5.1'
+    version = '0.19.8.1'
     licenses = [License.GPLv3]
     srcdir = 'gettext-tools'
     stype = SourceType.TARBALL
     tarball_dirname = 'gettext-%(version)s'
-    url = 'http://ftp.gnu.org/pub/gnu/gettext/gettext-0.19.5.1.tar.gz'
+    url = 'http://ftp.gnu.org/pub/gnu/gettext/gettext-0.19.8.1.tar.gz'
     platform_deps = {
             Platform.DARWIN:  ['sed'],
             Platform.WINDOWS: ['libiconv', 'mingw-runtime'],}
     configure_options = ' --disable-java --disable-csharp --disable-native-java --without-csv'
+    patches = ['../gettext/0001-Fix-linker-error-redefinition-of-vasprintf.patch',
+               '../gettext/0001-Undefine-__USE_MINGW_ANSI_STDIO-as-otherwise-stdio.h.patch',
+               '../gettext/0001-Fix-build-invalid-instruction-on-macOS-10.13.patch' ]
 
     def prepare(self):
         if self.config.target_platform == Platform.WINDOWS:

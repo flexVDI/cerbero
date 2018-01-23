@@ -7,9 +7,10 @@ class Recipe(recipe.Recipe):
     stype = SourceType.TARBALL
     url = 'http://ftp.gnome.org/pub/GNOME/sources/pygobject/3.16/pygobject-%(version)s.tar.xz'
     licenses = [License.LGPLv2_1Plus]
-    deps = ['gobject-introspection']
+    deps = ['gobject-introspection', 'py2cairo']
     make_check = None  # disabled until we fix the checks
     patches = ["pygobject/0001-overrides-Provide-_overrides_module-attribute-to-mak.patch"]
+    configure_options = '--with-python=python2 --disable-glibtest --enable-compile-warnings=no'
     files_python = [
                     'site-packages/gi/_gi%(pext)s',
                     'site-packages/gi/_gi_cairo%(pext)s',
@@ -46,12 +47,5 @@ class Recipe(recipe.Recipe):
                   ]
 
     def prepare(self):
-        if self.config.variants.python3:
-            self.deps.append("Python")
-            self.deps.append('pycairo')
-            self.configure_options = '--with-python=python3'
-        else:
-            self.deps.append('py2cairo')
-            self.configure_options = '--with-python=python2'
         if self.config.target_platform == Platform.LINUX:
             self.use_system_libs = True

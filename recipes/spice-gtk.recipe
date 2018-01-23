@@ -15,7 +15,7 @@ class Recipe(recipe.Recipe):
             'spice-protocol', 'nopoll', 'libjpeg-turbo', 'opus', 'pyparsing', 'six']
     platform_deps = {
             Platform.WINDOWS: [ 'usbredir' ],
-            Platform.LINUX: [ 'gtk+3', 'usbredir', 'librsvg', 'pulseaudio' ],
+            Platform.LINUX: [ 'gtk+3', 'usbredir', 'librsvg', 'pulseaudio', 'libva-intel-driver' ],
             Platform.DARWIN: [ 'gtk+3', 'librsvg' ]
             }
 
@@ -50,6 +50,3 @@ class Recipe(recipe.Recipe):
             self.use_system_libs = True
             self.configure_options += ' --with-gtk=3.0 --enable-spicy=no --disable-vala'
             self.configure_options += ' --enable-usbredir --with-usb-ids-path=./usb.ids'
-            if self.config.variants.va:
-                self.configure_options += ' --enable-va'
-                self.deps += ['libva-intel-driver']

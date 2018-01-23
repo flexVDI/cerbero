@@ -2,9 +2,50 @@
 #include <gst/gst.h>
 #include <gio/gio.h>
 #include <android/log.h>
+#include <string.h>
+
+/* XXX: Workaround for Android <21 making signal() an inline function
+ * around bsd_signal(), and Android >= 21 not having any bsd_signal()
+ * symbol but only signal().
+ * See https://bugzilla.gnome.org/show_bug.cgi?id=766235
+ */
+static gpointer
+load_real_signal (gpointer data)
+{
+  GModule *module;
+  gpointer ret = NULL;
+
+  module = g_module_open ("libc.so", G_MODULE_BIND_LOCAL);
+  g_module_symbol (module, "signal", &ret);
+
+  /* As fallback, let's try bsd_signal */
+  if (ret == NULL) {
+    g_warning ("Can't find signal(3) in libc.so!");
+    g_module_symbol (module, "bsd_signal", &ret);
+  }
+
+  g_module_close (module);
+
+  return ret;
+}
+
+__sighandler_t bsd_signal(int signum, __sighandler_t handler) __attribute__((weak));
+__sighandler_t bsd_signal(int signum, __sighandler_t handler)
+{
+  static GOnce gonce = G_ONCE_INIT;
+  __sighandler_t (*real_signal) (int signum, __sighandler_t handler);
+
+  g_once (&gonce, load_real_signal, NULL);
+
+  real_signal = gonce.retval;
+  g_assert (real_signal != NULL);
+
+  return real_signal(signum, handler);
+}
 
 static jobject _context = NULL;
 static jobject _class_loader = NULL;
+static JavaVM  *_java_vm = NULL;
 static GstClockTime _priv_gst_info_start_time;
 
 #define GST_G_IO_MODULE_DECLARE(name) \
@@ -362,15 +403,21 @@ get_application_dirs (JNIEnv * env, jobject context, gchar ** cache_dir,
 }
 
 jobject
-gst_android_get_application_context ()
+gst_android_get_application_context (void)
 {
   return _context;
 }
 
 jobject
-gst_android_get_application_class_loader ()
+gst_android_get_application_class_loader (void)
 {
   return _class_loader;
+}
+
+JavaVM *
+gst_android_get_java_vm (void)
+{
+  return _java_vm;
 }
 
 static gboolean
@@ -534,6 +581,9 @@ JNI_OnLoad (JavaVM * vm, void * reserved)
     return 0;
   }
 
+  /* Remember Java VM */
+  _java_vm = vm;
+
   /* Tell the androidmedia plugin about the Java VM if we can */
   module = g_module_open (NULL, G_MODULE_BIND_LOCAL);
   if (module) {
@@ -569,4 +619,6 @@ JNI_OnUnload (JavaVM * vm, void * reversed)
     (*env)->DeleteGlobalRef (env, _class_loader);
     _class_loader = NULL;
   }
+
+  _java_vm = NULL;
 }

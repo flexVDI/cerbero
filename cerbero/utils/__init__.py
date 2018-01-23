@@ -27,6 +27,7 @@ try:
     import xml.etree.cElementTree as etree
 except ImportError:
     from lxml import etree
+from distutils.version import StrictVersion
 import gettext
 import platform as pplatform
 import re
@@ -88,15 +89,35 @@ def fix_winpath(path):
     return path.replace('\\', '/')
 
 
+def windows_arch():
+    """
+    Detecting the 'native' architecture of Windows is not a trivial task. We
+    cannot trust that the architecture that Python is built for is the 'native'
+    one because you can run 32-bit apps on 64-bit Windows using WOW64 and
+    people sometimes install 32-bit Python on 64-bit Windows.
+    """
+    # These env variables are always available. See:
+    # https://msdn.microsoft.com/en-us/library/aa384274(VS.85).aspx
+    # https://blogs.msdn.microsoft.com/david.wang/2006/03/27/howto-detect-process-bitness/
+    arch = os.environ.get('PROCESSOR_ARCHITEW6432', '').lower()
+    if not arch:
+        # If this doesn't exist, something is messing with the environment
+        try:
+            arch = os.environ['PROCESSOR_ARCHITECTURE'].lower()
+        except KeyError:
+            raise FatalError(_('Unable to detect Windows architecture'))
+    return arch
+
 def system_info():
     '''
     Get the sysem information.
     Return a tuple with the platform type, the architecture and the
     distribution
     '''
-
     # Get the platform info
-    platform = sys.platform
+    platform = os.environ.get('OS', '').lower()
+    if not platform:
+        platform = sys.platform
     if platform.startswith('win'):
         platform = Platform.WINDOWS
     elif platform.startswith('darwin'):
@@ -108,11 +129,13 @@ def system_info():
 
     # Get the architecture info
     if platform == Platform.WINDOWS:
-        platform_str = sysconfig.get_platform()
-        if platform_str in ['win-amd64', 'win-ia64']:
+        arch = windows_arch()
+        if arch in ('x64', 'amd64'):
             arch = Architecture.X86_64
-        else:
+        elif arch == 'x86':
             arch = Architecture.X86
+        else:
+            raise FatalError(_("Windows arch %s is not supported") % arch)
     else:
         uname = os.uname()
         arch = uname[4]
@@ -120,6 +143,10 @@ def system_info():
             arch = Architecture.X86_64
         elif arch.endswith('86'):
             arch = Architecture.X86
+        elif arch.startswith('armv7'):
+            arch = Architecture.ARMv7
+        elif arch.startswith('arm'):
+            arch = Architecture.ARM
         else:
             raise FatalError(_("Architecture %s not supported") % arch)
 
@@ -132,6 +159,19 @@ def system_info():
                 # FIXME: the python2.7 platform module does not support Arch Linux.
                 # Mimic python3.4 platform.linux_distribution() output.
                 d = ('arch', 'Arch', 'Linux')
+            elif os.path.exists('/etc/os-release'):
+                with open('/etc/os-release', 'r') as f:
+                    if 'ID="amzn"\n' in f.readlines():
+                        d = ('RedHat', 'amazon', '')
+                    else:
+                        f.seek(0, 0)
+                        for line in f:
+                            k,v = line.rstrip().split("=")
+                            if k == 'NAME':
+                                name = v.strip('"')
+                            elif k == 'VERSION_ID':
+                                version = v.strip('"')
+                        d = (name, version, '');
 
         if d[0] in ['Ubuntu', 'debian', 'LinuxMint']:
             distro = Distro.DEBIAN
@@ -157,14 +197,20 @@ def system_info():
                 distro_version = DistroVersion.UBUNTU_UTOPIC
             elif d[2] in ['vivid']:
                 distro_version = DistroVersion.UBUNTU_VIVID
+            elif d[2] in ['wily']:
+                distro_version = DistroVersion.UBUNTU_WILY
+            elif d[2] in ['xenial', 'sarah', 'serena', 'sonya', 'sylvia']:
+                distro_version = DistroVersion.UBUNTU_XENIAL
             elif d[1].startswith('6.'):
                 distro_version = DistroVersion.DEBIAN_SQUEEZE
             elif d[1].startswith('7.') or d[1].startswith('wheezy'):
                 distro_version = DistroVersion.DEBIAN_WHEEZY
             elif d[1].startswith('8.') or d[1].startswith('jessie'):
                 distro_version = DistroVersion.DEBIAN_JESSIE
-            elif d[1].startswith('stretch'):
+            elif d[1].startswith('9.') or d[1].startswith('stretch'):
                 distro_version = DistroVersion.DEBIAN_STRETCH
+            elif d[1].startswith('10.') or d[1].startswith('buster'):
+                distro_version = DistroVersion.DEBIAN_BUSTER
             else:
                 raise FatalError("Distribution '%s' not supported" % str(d))
         elif d[0] in ['RedHat', 'Fedora', 'CentOS', 'Red Hat Enterprise Linux Server', 'CentOS Linux']:
@@ -197,24 +243,30 @@ def system_info():
                 distro_version = DistroVersion.REDHAT_6
             elif d[1].startswith('7.'):
                 distro_version = DistroVersion.REDHAT_7
+            elif d[1] == 'amazon':
+                distro_version = DistroVersion.AMAZON_LINUX
             else:
                 # FIXME Fill this
                 raise FatalError("Distribution '%s' not supported" % str(d))
         elif d[0].strip() in ['openSUSE']:
             distro = Distro.SUSE
-            if d[1] == '12.1':
-                distro_version = DistroVersion.OPENSUSE_12_1
-            elif d[1] == '12.2':
-                distro_version = DistroVersion.OPENSUSE_12_2
-            elif d[1] == '12.3':
-                distro_version = DistroVersion.OPENSUSE_12_3
+            if d[1] == '42.2':
+                distro_version = DistroVersion.OPENSUSE_42_2
+            elif d[1] == '42.3':
+                distro_version = DistroVersion.OPENSUSE_42_3
             else:
                 # FIXME Fill this
                 raise FatalError("Distribution OpenSuse '%s' "
                                  "not supported" % str(d))
+        elif d[0].strip() in ['openSUSE Tumbleweed']:
+            distro = Distro.SUSE
+            distro_version = DistroVersion.OPENSUSE_TUMBLEWEED
         elif d[0].strip() in ['arch']:
             distro = Distro.ARCH
             distro_version = DistroVersion.ARCH_ROLLING
+        elif d[0].strip() in ['Gentoo Base System']:
+            distro = Distro.GENTOO
+            distro_version = DistroVersion.GENTOO_VERSION
         else:
             raise FatalError("Distribution '%s' not supported" % str(d))
     elif platform == Platform.WINDOWS:
@@ -224,7 +276,10 @@ def system_info():
                 'vista': DistroVersion.WINDOWS_VISTA,
                 '7': DistroVersion.WINDOWS_7,
                 'post2008Server': DistroVersion.WINDOWS_8,
-                '8': DistroVersion.WINDOWS_8}
+                '8': DistroVersion.WINDOWS_8,
+                'post2012Server': DistroVersion.WINDOWS_8_1,
+                '8.1': DistroVersion.WINDOWS_8_1,
+                '10': DistroVersion.WINDOWS_10}
         if win32_ver in dmap:
             distro_version = dmap[win32_ver]
         else:
@@ -232,7 +287,9 @@ def system_info():
     elif platform == Platform.DARWIN:
         distro = Distro.OS_X
         ver = pplatform.mac_ver()[0]
-        if ver.startswith('10.12'):
+        if ver.startswith('10.13'):
+            distro_version = DistroVersion.OS_X_HIGH_SIERRA
+        elif ver.startswith('10.12'):
             distro_version = DistroVersion.OS_X_SIERRA
         elif ver.startswith('10.11'):
             distro_version = DistroVersion.OS_X_EL_CAPITAN
@@ -320,14 +377,35 @@ def add_system_libs(config, new_env):
     libdir = 'lib'
     if arch == Architecture.X86:
         arch = 'i386'
-    else:
-        if config.distro == Distro.REDHAT:
+    elif arch == Architecture.X86_64:
+        if config.distro == Distro.REDHAT or config.distro == Distro.SUSE:
             libdir = 'lib64'
 
-    search_paths = [os.environ['PKG_CONFIG_PATH'],
-        '/usr/%s/pkgconfig' % libdir, '/usr/share/pkgconfig',
-        '/usr/lib/%s-linux-gnu/pkgconfig' % arch]
+    sysroot = '/'
+    if config.sysroot:
+        sysroot = config.sysroot
+
+    search_paths = [os.environ['PKG_CONFIG_LIBDIR'],
+        os.path.join(sysroot, 'usr', libdir, 'pkgconfig'),
+        os.path.join(sysroot, 'usr/share/pkgconfig'),
+        os.path.join(sysroot, 'usr/lib/%s-linux-gnu/pkgconfig' % arch)]
     new_env['PKG_CONFIG_PATH'] = ':'.join(search_paths)
 
-    search_paths = [os.environ.get('ACLOCAL_PATH', ''), '/usr/share/aclocal']
+    search_paths = [os.environ.get('ACLOCAL_PATH', ''),
+        os.path.join(sysroot, 'usr/share/aclocal')]
     new_env['ACLOCAL_PATH'] = ':'.join(search_paths)
+
+def needs_xcode8_sdk_workaround(config):
+    '''
+    Returns whether the XCode 8 clock_gettime, mkostemp, getentropy workaround
+    from https://bugzilla.gnome.org/show_bug.cgi?id=772451 is needed
+
+    These symbols are only available on macOS 10.12+ and iOS 10.0+
+    '''
+    if config.target_platform == Platform.DARWIN:
+        if StrictVersion(config.min_osx_sdk_version) < StrictVersion('10.12'):
+            return True
+    elif config.target_platform == Platform.IOS:
+        if StrictVersion(config.ios_min_version) < StrictVersion('10.0'):
+            return True
+    return False

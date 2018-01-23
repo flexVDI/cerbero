@@ -3,11 +3,15 @@
 
 class Recipe(recipe.Recipe):
     name = 'm4'
-    version = '1.4.17'
+    version = '1.4.18'
     licenses = [License.GPLv2]
     stype = SourceType.TARBALL
-    url = 'http://ftp.gnu.org/gnu/m4/m4-1.4.17.tar.xz'
+    url = 'http://ftp.gnu.org/gnu/m4/m4-1.4.18.tar.xz'
     files_bins = ['m4']
 
+    patches = ['m4/0001-Fix-build-invalid-instruction-on-macOS-10.13.patch',
+               'm4/0001-Undefine-__USE_MINGW_ANSI_STDIO-as-otherwise-stdio.h.patch']
+
     def prepare(self):
-        self.append_env['CFLAGS'] = " -Wno-error=cast-align "
+        self.configure_options += " --disable-gcc-warnings"
+        self.append_env['CFLAGS'] = " -Wno-error=cast-align"

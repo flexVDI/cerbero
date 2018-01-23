@@ -271,7 +271,8 @@ class ProductPackage(PackagerBase):
     def _create_framework_bundle_packager(self):
         m.action(_("Creating framework package"))
         packager = FrameworkBundlePackager(self.package, 'osx-framework',
-                'Framework Bundle',
+                'GStreamer',
+                'GStreamer OSX Framework Bundle Version %s' % (self.package.version),
                 '3ffe67c2-4565-411f-8287-e8faa892f853')
         return packager
 
@@ -335,11 +336,18 @@ class ProductPackage(PackagerBase):
         dmg_file = os.path.join(self.output_dir,
             self._package_name('-packages.dmg'))
 
-        # Create Disk Image
-        cmd = 'hdiutil create %s -ov' % dmg_file
-        for p in paths:
-            cmd += ' -srcfolder %s' % p
-        shell.call(cmd)
+        m.action(_("Creating image %s ") % dmg_file)
+        # create a temporary directory to store packages
+        workdir = os.path.join (self.tmp, "hdidir")
+        os.makedirs(workdir)
+        try:
+            for p in paths:
+                shutil.copy(p, workdir)
+            # Create Disk Image
+            cmd = 'hdiutil create %s -ov -srcfolder %s' % (dmg_file, workdir)
+            shell.call(cmd)
+        finally:
+            shutil.rmtree(workdir)
 
 
 class ApplicationPackage(PackagerBase):
@@ -568,7 +576,8 @@ class IOSPackage(ProductPackage, FrameworkHeadersMixin):
     def _create_framework_bundle_packager(self):
         m.action(_("Creating framework package"))
         packager = FrameworkBundlePackager(self.package, 'ios-framework',
-                'Framework Bundle',
+                'GStreamer',
+                'GStreamer iOS Framework Bundle Version %s' % (self.package.version),
                 '3ffe67c2-3421-411f-8287-e8faa892f853')
         return packager
 

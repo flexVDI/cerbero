@@ -18,10 +18,12 @@
 
 import os
 
-from cerbero.config import Config, DEFAULT_HOME, Platform, DistroVersion
+from cerbero.config import Config, Platform, DistroVersion
 from cerbero.bootstrap import BootstrapperBase
 from cerbero.build.oven import Oven
 from cerbero.build.cookbook import CookBook
+from cerbero.utils import _
+from cerbero.errors import FatalError, ConfigurationError
 
 
 class BuildTools (BootstrapperBase):
@@ -39,7 +41,7 @@ class BuildTools (BootstrapperBase):
 
         # if cross-compiling or not on linux, make sure we have gtk-doc
         if self.config.target_platform != Platform.LINUX or\
-           not self.config.prefix_is_executable():
+           self.config.cross_compiling():
             self.BUILD_TOOLS.append('gtk-doc-lite')
 
         if self.config.platform == Platform.WINDOWS:
@@ -47,7 +49,7 @@ class BuildTools (BootstrapperBase):
             self.BUILD_TOOLS.append('gperf')
         if self.config.platform == Platform.DARWIN:
             self.BUILD_TOOLS.append('gperf')
-            self.BUILD_TOOLS.insert(0, 'tar')
+            self.BUILD_TOOLS.append('cmake')
             self.BUILD_TOOLS.insert(0, 'xz')
         if self.config.platform == Platform.LINUX:
             if self.config.distro_version == DistroVersion.UBUNTU_LUCID or \
@@ -55,17 +57,16 @@ class BuildTools (BootstrapperBase):
                 self.config.distro_version == DistroVersion.DEBIAN_WHEEZY:
                 # x264 requires yasm >= 1.2
                 self.BUILD_TOOLS.append('yasm')
-            if self.config.distro_version in [DistroVersion.REDHAT_6]:
+            if self.config.distro_version in [DistroVersion.REDHAT_6,
+                                              DistroVersion.AMAZON_LINUX]:
                 self.BUILD_TOOLS.append('cmake')
-        if self.config.target_platform == Platform.LINUX:
-            self.BUILD_TOOLS.append('app-image-kit')
         if self.config.target_platform == Platform.IOS:
             self.BUILD_TOOLS.append('gas-preprocessor')
         if self.config.distro_version in [DistroVersion.UBUNTU_LUCID,
                                           DistroVersion.UBUNTU_NATTY]:
             self.BUILD_TOOLS.append('glib-tools')
-        if self.config.platform != Platform.LINUX and\
-                not self.config.prefix_is_executable():
+        if self.config.platform != Platform.LINUX and not \
+           self.config.prefix_is_executable():
             # For glib-mkenums and glib-genmarshal
             self.BUILD_TOOLS.append('glib-tools')
         self.BUILD_TOOLS += self.config.extra_build_tools
@@ -79,7 +80,6 @@ class BuildTools (BootstrapperBase):
         config.prefix = self.config.build_tools_prefix
         config.home_dir = self.config.home_dir
         config.load()
-        config.variants.python3 = False
 
         config.prefix = self.config.build_tools_prefix
         config.build_tools_prefix = self.config.build_tools_prefix
@@ -89,6 +89,8 @@ class BuildTools (BootstrapperBase):
         config.build_tools_cache = self.config.build_tools_cache
         config.external_recipes = self.config.external_recipes
 
+        if config.toolchain_prefix and not os.path.exists(config.toolchain_prefix):
+            raise ConfigurationError(_("Please run bootstrap without any '-c' arguments first to setup build-tools for this machine"))
         if not os.path.exists(config.prefix):
             os.makedirs(config.prefix)
         if not os.path.exists(config.sources):

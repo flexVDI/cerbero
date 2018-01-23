@@ -18,7 +18,7 @@
 
 import os
 
-from cerbero.build.filesprovider import FilesProvider
+from cerbero.build.filesprovider import flatten_files_list, FilesProvider
 from cerbero.enums import License, Platform
 from cerbero.packages import PackageType
 from cerbero.utils import remove_list_duplicates
@@ -36,8 +36,6 @@ class PackageBase(object):
     @type longdesc: str
     @cvar version: version of the package
     @type version: str
-    @cvar codename: codename of the release
-    @type codename: str
     @cvar uuid: unique id for this package
     @type uuid: str
     @cvar license: package license
@@ -80,7 +78,6 @@ class PackageBase(object):
     shortdesc = 'default'
     longdesc = 'default'
     version = '1.0'
-    codename = None
     org = 'default'
     uuid = None
     license = License.GPL
@@ -254,7 +251,7 @@ class Package(PackageBase):
         for name in self.deps:
             p = self.store.get_package(name)
             deps += p.recipes_dependencies(use_devel)
-        return deps
+        return remove_list_duplicates(deps)
 
     def recipes_licenses(self):
         return self._list_licenses(self._recipes_files)
@@ -543,7 +540,7 @@ class App(Package):
             deps.extend(package.recipes_dependencies(use_devel))
         if self.app_recipe is not None:
             deps.append(self.app_recipe)
-        return list(set(deps))
+        return remove_list_duplicates(deps)
 
     def files_list(self):
         # for each package, call the function that list files
@@ -558,7 +555,7 @@ class App(Package):
             # Also include all the libraries provided by the recipes we depend
             # on.
             for recipe in self.cookbook.list_recipe_deps(self.app_recipe):
-                files.extend(recipe.libraries())
+                files.extend(flatten_files_list(recipe.libraries().values()))
                 files.extend(recipe.files_list_by_category(FilesProvider.PY_CAT))
                 files.extend(recipe.files_list_by_category(FilesProvider.TYPELIB_CAT))
 

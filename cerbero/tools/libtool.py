@@ -111,7 +111,7 @@ libdir='%(libdir)s'
                 dlname_all = '%s.%s' % (dlname, minor)
                 minor_str = minor
                 if micro is not None:
-                    dlname_all = '%s.%s' % (dlname, micro)
+                    dlname_all = '%s.%s' % (dlname_all, micro)
                     micro_str = micro
         old_library = '%s.a' % libname
         self.change_value('libname', self.laname)
@@ -138,6 +138,8 @@ libdir='%(libdir)s'
         libtool_deps = [x for x in deps if not x.startswith('-l')]
         lib_deps = [x for x in deps if x.startswith('-l')]
         for d in libtool_deps:
-            deps_str += ' %s/lib%s.la ' % (self.libdir, d)
+            if not d.startswith('lib'):
+                d = 'lib' + d
+            deps_str += ' %s/%s.la ' % (self.libdir, d)
         deps_str += ' '.join(lib_deps)
         return deps_str

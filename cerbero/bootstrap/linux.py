@@ -19,6 +19,7 @@
 from cerbero.bootstrap import BootstrapperBase
 from cerbero.bootstrap.bootstrapper import register_bootstrapper
 from cerbero.config import Platform, Architecture, Distro, DistroVersion
+from cerbero.errors import ConfigurationError
 from cerbero.utils import shell
 
 import subprocess
@@ -26,10 +27,14 @@ import subprocess
 class UnixBootstrapper (BootstrapperBase):
 
     tool = ''
+    checks = []
     packages = []
     distro_packages = {}
 
     def start(self):
+        for c in self.checks:
+            c()
+
         if self.config.distro_packages_install:
             packages = self.packages
             if self.config.distro_version in self.distro_packages:
@@ -70,6 +75,7 @@ class DebianBootstrapper (UnixBootstrapper):
             self.packages.append('mingw-w64-tools')
             if self.config.arch == Architecture.X86_64:
                 self.packages.append('libc6:i386')
+                self.checks.append(self.create_debian_arch_check('i386'))
         if self.config.target_platform == Platform.LINUX:
             self.packages.append('chrpath')
             self.packages.append('libfuse-dev')
@@ -79,10 +85,23 @@ class DebianBootstrapper (UnixBootstrapper):
         if self.config.distro_version in [DistroVersion.UBUNTU_LUCID]:
             self.packages.remove('autopoint')
 
+    def create_debian_arch_check(self, arch):
+        def check_arch():
+            native_arch = shell.check_call('dpkg --print-architecture')
+            if native_arch == arch:
+                return
+            foreign_archs = shell.check_call('dpkg --print-foreign-architectures')
+            if arch in foreign_archs.split():
+                return
+            raise ConfigurationError(('Architecture %s is missing from your setup. ' + \
+                                      'You can add it with: "dpkg --add-architecture %s",' + \
+                                      ' then run "apt-get update."') \
+                                      % (arch, arch))
+
+        return check_arch
 
 class RedHatBootstrapper (UnixBootstrapper):
 
-    tool = 'su -c "yum install %s"'
     packages = ['gcc', 'gcc-c++', 'automake', 'autoconf', 'libtool',
                 'gettext-devel', 'make', 'cmake', 'bison', 'flex', 'yasm',
                 'pkgconfig', 'gtk-doc', 'curl', 'doxygen', 'texinfo',
@@ -98,15 +117,23 @@ class RedHatBootstrapper (UnixBootstrapper):
 
     def __init__(self, config):
         UnixBootstrapper.__init__(self, config)
+        if self.config.distro_version in [DistroVersion.FEDORA_23, DistroVersion.FEDORA_24, DistroVersion.FEDORA_25]:
+            self.tool = 'dnf install %s'
+        else:
+            self.tool = 'yum install %s'
         if self.config.target_platform == Platform.WINDOWS:
             self.packages.append('mingw-w64-tools')
             if self.config.arch == Architecture.X86_64:
                 self.packages.append('glibc.i686')
+            if self.config.distro_version in [DistroVersion.FEDORA_24, DistroVersion.FEDORA_25]:
+                self.packages.append('libncurses-compat-libs.i686')
         if self.config.target_platform == Platform.LINUX:
             self.packages.append('chrpath')
             self.packages.append('fuse-devel')
         # Use sudo to gain root access on everything except RHEL
-        if self.config.distro_version != DistroVersion.REDHAT_6:
+        if self.config.distro_version == DistroVersion.REDHAT_6:
+            self.tool = 'su -c "' + self.tool + '"'
+        else:
             self.tool = 'sudo ' + self.tool
 
 class OpenSuseBootstrapper (UnixBootstrapper):
@@ -119,9 +146,10 @@ class OpenSuseBootstrapper (UnixBootstrapper):
             'transfig', 'intltool', 'patterns-openSUSE-devel_rpm_build',
             'python-devel', 'xorg-x11-libXrender-devel', 'libpulse-devel',
             'xorg-x11-libXv-devel', 'Mesa-libGL-devel', 'libXcomposite-devel',
-            'alsa-devel', 'libXi-devel', 'Mesa-devel',
+            'libX11-devel', 'alsa-devel', 'libXi-devel', 'Mesa-devel',
+            'Mesa-libGLESv3-devel',
             'perl-XML-Simple', 'gperf', 'gdk-pixbuf-devel', 'wget',
-            'docbook-utils', 'glib-networkinga', 'git', 'subversion']
+            'docbook-utils', 'glib-networking', 'git', 'subversion']
 
 class ArchBootstrapper (UnixBootstrapper):
 
@@ -147,9 +175,28 @@ class ArchBootstrapper (UnixBootstrapper):
         else:
             self.packages.append('gcc')
 
+class GentooBootstrapper (UnixBootstrapper):
+
+    tool = 'sudo emerge -u %s'
+    packages = ['dev-util/intltool', 'sys-fs/fuse', 'dev-util/cmake',
+            'app-doc/doxygen', 'dev-util/gtk-doc', 'sys-devel/libtool',
+            'sys-devel/bison', 'sys-devel/flex', 'sys-devel/automake',
+            'sys-devel/autoconf', 'sys-devel/make', 'net-misc/curl',
+            'sys-devel/gettext', 'media-libs/alsa-lib', 'media-sound/pulseaudio',
+            'dev-lang/yasm', 'dev-util/gperf', 'app-text/docbook-xsl-stylesheets',
+            'media-gfx/transfig', 'x11-libs/libXrender', 'x11-libs/libXv',
+            'media-libs/mesa', 'net-misc/wget', 'net-libs/glib-networking']
+
+class NoneBootstrapper (BootstrapperBase):
+
+    def start(self):
+        pass
+
 
 def register_all():
     register_bootstrapper(Distro.DEBIAN, DebianBootstrapper)
     register_bootstrapper(Distro.REDHAT, RedHatBootstrapper)
     register_bootstrapper(Distro.SUSE, OpenSuseBootstrapper)
     register_bootstrapper(Distro.ARCH, ArchBootstrapper, DistroVersion.ARCH_ROLLING)
+    register_bootstrapper(Distro.GENTOO, GentooBootstrapper, DistroVersion.GENTOO_VERSION)
+    register_bootstrapper(Distro.NONE, NoneBootstrapper)

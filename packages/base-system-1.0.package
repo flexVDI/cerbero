@@ -2,17 +2,11 @@
 # -*- Mode: Python -*-
 
 
-class Package(package.Package):
+class Package(custom.GStreamer, package.Package):
 
     name = 'base-system-1.0'
     shortdesc = 'Base system dependencies'
     longdesc = 'Base system dependencies'
-    url = "http://gstreamer.freedesktop.org"
-    version = '1.7.0'
-    codename = 'Congo'
-    license = License.LGPL
-    vendor = 'GStreamer Project'
-    org = 'org.freedesktop.gstreamer'
     uuid = 'fae6046d-5a39-4d54-93ee-3770d2f316f5'
 
     files = ['cairo:libs', 'expat:libs', 'fontconfig:libs:etc',
@@ -21,7 +15,8 @@ class Package(package.Package):
              'libpng:libs', 'tiff:libs', 'libjpeg-turbo:libs',
              'libxml2:libs', 'pixman:libs',
              'zlib:libs', 'bzip2:libs', 'harfbuzz:libs',
-             'libcroco:libs', 'librsvg:libs']
+             'libcroco:libs', 'librsvg:libs',
+             'json-glib:bins:libs']
 
     platform_files = {
         Platform.WINDOWS: ['gettext:libs:lang', 'libiconv:libs:lang',

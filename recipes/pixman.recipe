@@ -5,9 +5,9 @@ import shutil
 
 class Recipe(recipe.Recipe):
     name = 'pixman'
-    version = '0.32.6'
+    version = '0.34.0'
     stype = SourceType.TARBALL
-    url = 'http://cairographics.org/releases/pixman-0.32.6.tar.gz'
+    url = 'http://cairographics.org/releases/pixman-0.34.0.tar.gz'
     licenses = [License.MIT]
     autoreconf = True
     patches = ['pixman/0001-Fix-build-on-Android.patch',
@@ -17,7 +17,11 @@ class Recipe(recipe.Recipe):
     files_devel = ['include/pixman-1', 'lib/pkgconfig/pixman-1.pc']
 
     def prepare(self):
-        self.configure_options = "--disable-mmx"
+        # clang from xcode has a known bug, avoid codepath that trigger it
+        # More info : https://github.com/Homebrew/homebrew/issues/41056
+        if self.config.target_platform in [ Platform.DARWIN, Platform.IOS ] and \
+           self.config.target_arch in [ Architecture.X86, Architecture.X86_64 ]:
+            self.configure_options = '--disable-mmx'
         if self.config.target_platform == Platform.ANDROID:
             # FIXME: Fails to link because of undefined __builtin_* symbols
             self.configure_options = '--disable-arm-iwmmxt'

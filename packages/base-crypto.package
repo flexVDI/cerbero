@@ -2,17 +2,11 @@
 # -*- Mode: Python -*-
 
 
-class Package(package.Package):
+class Package(custom.GStreamer, package.Package):
 
     name = 'base-crypto'
     shortdesc = 'Crypto base dependencies'
     longdesc = 'Crypto base dependencies'
-    url = "http://gstreamer.freedesktop.org"
-    version = '1.7.0'
-    codename = 'Congo'
-    license = License.LGPL
-    vendor = 'GStreamer Project'
-    org = 'org.freedesktop.gstreamer'
     uuid = 'b3a6046d-5a39-4d54-93ee-3770d2f316f5'
     deps = ['base-system-1.0']
 
@@ -20,5 +14,8 @@ class Package(package.Package):
              'libtasn1:libs', 'nettle:libs']
 
     platform_files_devel = {
-        Platform.ANDROID: ['ca-certificates:etc']
+        Platform.ANDROID: ['ca-certificates:etc'],
+        Platform.IOS: ['ca-certificates:etc'],
+        Platform.DARWIN: ['ca-certificates:etc'],
+        Platform.WINDOWS: ['ca-certificates:etc']
     }

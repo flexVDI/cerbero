@@ -18,9 +18,9 @@
 
 import os
 import tarfile
-import zipfile
 
-from cerbero.packages import PackageType
+from cerbero.config import Architecture
+from cerbero.packages import PackageType, PackagerBase
 from cerbero.packages.disttarball import DistTarball
 from cerbero.errors import UsageError
 
@@ -30,6 +30,32 @@ class AndroidPackager(DistTarball):
 
     def __init__(self, config, package, store):
         DistTarball.__init__(self, config, package, store)
+
+    def files_list(self, package_type, force):
+        if self.config.target_arch != Architecture.UNIVERSAL:
+            # Nothing special to do for normal arches, just chain up
+            return PackagerBase.files_list(self, package_type, force)
+        else:
+            # For the universal architecture, collect files from each
+            # sub-archtecture
+            if package_type == PackageType.DEVEL:
+                files = self.package.devel_files_list()
+            else:
+                files = self.package.files_list()
+
+            all_files = []
+
+            if isinstance(self.config.universal_archs, list):
+                archs = self.config.universal_archs
+            elif isinstance(self.config.universal_archs, dict):
+                archs = self.config.universal_archs.keys()
+            else:
+                raise ConfigurationError('universal_archs must be a list or a dict')
+
+            for arch in archs:
+                all_files += [os.path.join(str(arch), f) for f in files]
+
+            return all_files
 
     def _create_tarball(self, output_dir, package_type, files, force,
                         package_prefix):
@@ -54,24 +80,6 @@ class AndroidPackager(DistTarball):
             filepath = os.path.join(self.prefix, f)
             tar.add(filepath, os.path.join(package_prefix, f))
         tar.close()
-        filenames.append(filename)
-
-        # Create the zip file for windows
-        filename = os.path.join(output_dir, self._get_name(package_type,
-            ext='zip'))
-        if os.path.exists(filename):
-            if force:
-                os.remove(filename)
-            else:
-                raise UsageError("File %s already exists" % filename)
-
-        zipf = zipfile.ZipFile(filename, 'w')
-
-        for f in files:
-            filepath = os.path.join(self.prefix, f)
-            zipf.write(filepath, os.path.join(package_prefix, f),
-                    compress_type=zipfile.ZIP_DEFLATED)
-        zipf.close()
         filenames.append(filename)
 
         return  ' '.join(filenames)
