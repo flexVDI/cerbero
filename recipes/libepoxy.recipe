@@ -9,9 +9,9 @@ class Recipe(recipe.Recipe):
     config_sh = 'sh autogen.sh'
     use_system_libs = True
     patches = ['libepoxy/0001-Fix-aclocal-problems.patch']
-    deps = []
+    deps = ['xorg-macros']
     platform_deps = {
-        Platform.LINUX: ['xorg-macros', 'libdrm' ]
+        Platform.LINUX: ['libdrm' ]
     }
 
     files_libs = ['libepoxy']
