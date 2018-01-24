@@ -3,11 +3,11 @@
 
 class Recipe(recipe.Recipe):
     name = 'spice-protocol'
-    version = '0.12.10-flexvdi'
+    version = '0.12.13-flexvdi'
     # either LGPLv2.1 or MPLv1.1
     licenses = [License.LGPLv2_1]
     remotes = {'origin': 'https://github.com/flexVDI/spice-protocol'}
-    commit = 'origin/master'
+    commit = 'origin/v0.12.13-flexvdi'
     autoreconf = True
     autoreconf_sh = 'NOCONFIGURE=1 ./autogen.sh'
     configure_tpl = './configure --prefix=%(prefix)s --datarootdir=%(prefix)s/lib %(options)s '
