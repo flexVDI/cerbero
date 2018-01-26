@@ -1,7 +1,7 @@
-From 5e07232f2f285cbb86111184aab24470bfbdace8 Mon Sep 17 00:00:00 2001
+From 541eb83456188ac6cbace33f17e5dd654aaf60f5 Mon Sep 17 00:00:00 2001
 From: Jorge Olmos <jorge.olmos@flexvdi.com>
 Date: Wed, 12 Apr 2017 09:18:34 +0200
-Subject: [PATCH] Add m4 path for autoreconf
+Subject: [PATCH 2/3] Add m4 path for autoreconf
 
 When cross-compiling (or compiling to a given prefix), m4 macros
 are not installed in a system path.
@@ -13,7 +13,7 @@ The missing macro is AM_GLIB_GNU_GETTEXT installed by glib.
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/Makefile.am b/Makefile.am
-index f29b02b..8a14b8f 100644
+index 3888e82..7b51907 100644
 --- a/Makefile.am
 +++ b/Makefile.am
 @@ -1,4 +1,4 @@
@@ -23,5 +23,5 @@ index f29b02b..8a14b8f 100644
  
  SUBDIRS = spice-common src man po doc data
 -- 
-2.7.4
+2.14.3
 

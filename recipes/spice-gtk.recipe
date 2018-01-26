@@ -2,9 +2,9 @@
 
 class Recipe(recipe.Recipe):
     name = 'spice-gtk'
-    version = '0.29-flexvdi'
+    version = '0.34-flexvdi'
     remotes = {'origin': 'https://github.com/flexVDI/spice-gtk.git'}
-    commit = 'v0.29-fv9'
+    commit = 'v0.34-fv1'
     # either LGPLv2.1 or MPLv1.1
     licenses = [License.LGPLv2_1]
     autoreconf = True 
@@ -12,11 +12,11 @@ class Recipe(recipe.Recipe):
     make_check = None
 
     deps = ['glib', 'libpng', 'zlib', 'pixman', 'fontconfig', 'freetype', 'gtk-doc-lite',
+            'gstreamer-1.0', 'gst-plugins-base-1.0', 'gst-plugins-good-1.0',
             'spice-protocol', 'nopoll', 'libjpeg-turbo', 'opus', 'pyparsing', 'six']
     platform_deps = {
-            Platform.WINDOWS: [ 'usbredir' ],
-            Platform.LINUX: [ 'gtk+3', 'usbredir', 'librsvg', 'pulseaudio', 'libva-intel-driver' ],
-            Platform.DARWIN: [ 'gtk+3', 'librsvg' ]
+            Platform.WINDOWS: [ 'gtk+3', 'usbredir', 'librsvg' ],
+            Platform.LINUX: [ 'gtk+3', 'usbredir', 'librsvg', 'libva-intel-driver' ]
             }
 
     patches = ['spice-gtk/0001-Do-not-build-tests.patch',
@@ -29,24 +29,29 @@ class Recipe(recipe.Recipe):
 
     def prepare(self):
         self.configure_options += ' --disable-werror --disable-smartcard'
-        self.configure_options += ' --disable-controller'
-        if self.config.target_platform == Platform.LINUX:
-            self.configure_options += ' --with-audio=pulse'
-        else:
-            self.configure_options += ' --with-audio=gstreamer'
-            self.deps += ['gstreamer-1.0', 'gst-plugins-base-1.0']
+        self.configure_options += ' --disable-vala --disable-controller'
+        self.configure_options += ' --disable-pulse --disable-builtin-mjpeg'
 
         if self.config.target_platform in [Platform.IOS, 
                                           Platform.DARWIN,
                                           Platform.ANDROID]:
-            #self.configure_options += ' --enable-static --with-gtk=no --with-coroutine=gthread '
-            self.configure_options += ' --enable-static --with-coroutine=gthread --enable-spicy=yes'
+            self.configure_options += ' --enable-static --with-gtk=no --with-coroutine=gthread '
             self.patches += ['spice-gtk/0003-Remove-missing-symbols-from-export-files.patch']
         elif self.config.target_platform == Platform.WINDOWS:
-            self.configure_options += ' --with-gtk=no'
+            self.configure_options += ' --enable-tools' # Build spicy for Windows Dashboard
             self.configure_options += ' --enable-usbredir --with-usb-ids-path=./usb.ids'
-            self.configure_options += ' CPPFLAGS=" -DWIN32_LEAN_AND_MEAN ${CPPFLAGS}"'
+            if self.config.target_arch == Architecture.X86:
+                host = 'i686-w64-mingw32'
+            else:
+                host = 'x86_64-w64-mingw32'
+            directx_headers = os.path.join(self.config.toolchain_prefix, host, 'include', 'directx')
+            self.configure_options += ' CPPFLAGS=" -I' + directx_headers + ' -DWIN32_LEAN_AND_MEAN ${CPPFLAGS}"'
+            self.configure_options += ' LIBS=" -limm32"'
         elif self.config.target_platform == Platform.LINUX:
             self.use_system_libs = True
-            self.configure_options += ' --with-gtk=3.0 --enable-spicy=no --disable-vala'
             self.configure_options += ' --enable-usbredir --with-usb-ids-path=./usb.ids'
+
+    def post_install(self):
+        if self.config.target_platform in [Platform.WINDOWS, Platform.LINUX]:
+            shell.download("http://www.linux-usb.org/usb.ids",
+                           destination=os.path.join(self.config.prefix, 'bin', 'usb.ids'))
