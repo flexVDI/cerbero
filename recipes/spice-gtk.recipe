@@ -20,7 +20,8 @@ class Recipe(recipe.Recipe):
             }
 
     patches = ['spice-gtk/0001-Do-not-build-tests.patch',
-               'spice-gtk/0002-Add-m4-path-for-autoreconf.patch']
+               'spice-gtk/0002-Add-m4-path-for-autoreconf.patch',
+               'spice-gtk/0004-Fix-setting-appsrc-properties-in-i686-arch.patch']
 
     files_devel = ['include/spice-client-glib-2.0',
                    'lib/pkgconfig/spice-client-glib-2.0.pc']
