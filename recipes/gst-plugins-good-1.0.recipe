@@ -219,6 +219,7 @@ class Recipe(custom.GStreamer):
             self.configure_options += ' --disable-x --disable-xvideo'
 
         if self.config.variants.pulse:
+            self.deps += ['pulseaudio']
             self.files_plugins_sys += ['lib/gstreamer-1.0/libgstpulseaudio%(mext)s']
             self.files_plugins_sys_devel += [
                 'lib/gstreamer-1.0/libgstpulseaudio.a', 'lib/gstreamer-1.0/libgstpulseaudio.la',
