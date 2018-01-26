@@ -3,12 +3,13 @@
 
 class Recipe(recipe.Recipe):
     name = 'pulseaudio'
-    version = '9.0'
+    version = '8.0'
     stype = SourceType.TARBALL
     url = 'http://freedesktop.org/software/pulseaudio/releases/pulseaudio-%(version)s.tar.xz'
     # either LGPLv2.1 or MPLv1.1
     licenses = License.PUBLIC_DOMAIN
     deps = ['json-c', 'libsndfile', 'libsamplerate']
+    configure_options = '--disable-webrtc-aec --disable-tests'
 
     def prepare(self):
         if self.config.target_platform == Platform.LINUX:
