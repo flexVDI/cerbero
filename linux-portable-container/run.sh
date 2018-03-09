@@ -7,6 +7,15 @@ if [ "$BUILDDIR" == "$SRCDIR" ]; then
     BUILDDIR="$BUILDDIR"/build
 fi
 arch=${1:-x86_64}
+EXTRA_VOLUMES=$(
+    IFS=:
+    for d in $EXTRA_SOURCES; do
+        IFS=, read dir mount <<< "$d"
+        dir=$(readlink -e "$dir")
+        if [ -z "$mount" ]; then mount=$(basename "$dir"); fi
+        echo -n " -v $dir:/home/cerbero/src/$mount:ro"
+    done
+)
 
 set -e
 
@@ -54,6 +63,7 @@ docker run -it --rm \
     -e DISPLAY=$DISPLAY \
     -v /tmp/.X11-unix:/tmp/.X11-unix \
     -v /etc/localtime:/etc/localtime:ro \
+    $EXTRA_VOLUMES \
     -e TERM=$TERM \
     -e LOCAL_UID=`id -u` -e LOCAL_GID=`id -g` \
     linux-portable-$arch
