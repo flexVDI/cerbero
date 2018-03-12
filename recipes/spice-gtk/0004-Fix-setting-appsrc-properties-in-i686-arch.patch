@@ -22,7 +22,7 @@ index d7f47d1..ff4a884 100644
                   "is-live", TRUE,
                   "format", GST_FORMAT_TIME,
 -                 "max-bytes", 0,
-+                 "max-bytes", 0LL,
++                 "max-bytes", G_GINT64_CONSTANT(0),
                   "block", TRUE,
                   NULL);
      gst_caps_unref(caps);
