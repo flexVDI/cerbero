@@ -1,5 +1,7 @@
 # -*- Mode: Python -*- vi:si:et:sw=4:sts=4:ts=4:syntax=python
 
+import os
+from cerbero.build.cookbook import CookBook
 
 class Recipe(recipe.Recipe):
 
@@ -11,5 +13,23 @@ class Recipe(recipe.Recipe):
     btype = BuildType.CMAKE
 
     deps = ['flexdp', 'libcups', 'boost', 'spice-vdagent' ]
+
+    def install(self):
+        if self.config.target_platform == Platform.LINUX and self.config.target_arch == Architecture.X86_64:
+            build_dir_i686 = os.path.join(self.config.sources, '..', 'i686-build')
+            fgabd64 = self.build_dir
+            fgabd32 = os.path.join(build_dir_i686, os.path.basename(self.build_dir))
+            cookbook = CookBook(self.config)
+            vda_recipe = cookbook.get_recipe('spice-vdagent')
+            vdabd64 = vda_recipe.build_dir
+            vdabd32 = os.path.join(build_dir_i686, os.path.basename(vda_recipe.build_dir))
+            if not os.path.exists(fgabd32) or not os.path.exists(vdabd64) or not os.path.exists(vdabd32):
+                return
+            with open(os.path.join(self.build_dir, 'build_installer.conf'), 'w') as fd:
+                fd.write('FGA_BUILD_DIR_i686=' + fgabd32 + '\n')
+                fd.write('VDA_BUILD_DIR_i686=' + vdabd32 + '\n')
+                fd.write('FGA_BUILD_DIR_x86_64=' + fgabd64 + '\n')
+                fd.write('VDA_BUILD_DIR_x86_64=' + vdabd64 + '\n')
+            shell.call('make installer', self.build_dir)
 
     # TODO: build Windows version with toolchain
