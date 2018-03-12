@@ -7,7 +7,8 @@ RUN apt-get update && apt-get install -y \
     python python-argparse python-pyparsing cmake libfuse-dev libglib2.0-dev texinfo gtk-doc-tools \
     flex bison python-dev libxcb-damage0-dev libxcb-shm0-dev libxcb-xfixes0-dev libxcb-xtest0-dev libxi-dev \
     libdbus-1-dev libxtst-dev libegl1-mesa-dev libudev-dev libtext-csv-perl libxrender-dev python-setuptools \
-    strace libasound2-dev libxcursor-dev libpciaccess-dev libxrandr-dev libxinerama-dev libxv-dev
+    strace libasound2-dev libxcursor-dev libpciaccess-dev libxrandr-dev libxinerama-dev libxv-dev \
+    selinux-policy-dev
 
 # Pre-setup user cerbero
 RUN echo "cerbero ALL=(ALL:ALL) NOPASSWD: ALL" >> /etc/sudoers
