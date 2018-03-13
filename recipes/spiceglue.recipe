@@ -4,7 +4,7 @@
 class Recipe(recipe.Recipe):
     name = 'spiceglue'
     version = '2.2'
-    commit = 'macClient2.2.6'
+    commit = '14eaca9'
     remotes = {'origin': 'https://github.com/flexvdi/spiceglue'}
 
     autoreconf = True 
