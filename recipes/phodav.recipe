@@ -1,0 +1,10 @@
+# -*- Mode: Python -*- vi:si:et:sw=4:sts=4:ts=4:syntax=python
+
+
+class Recipe(recipe.Recipe):
+    name = 'phodav'
+    version = '2.2'
+    stype = SourceType.TARBALL
+    url = 'http://ftp.gnome.org/pub/GNOME/sources/phodav/%(version)s/phodav-%(version)s.tar.xz'
+    licenses = [License.BSD_like]
+
