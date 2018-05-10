@@ -15,6 +15,7 @@ class Recipe(recipe.Recipe):
     deps = ['flexdp', 'libcups', 'boost', 'spice-vdagent' ]
 
     def install(self):
+        shell.call('make DESTDIR=target install', self.build_dir)
         if self.config.target_platform == Platform.LINUX and self.config.target_arch == Architecture.X86_64:
             build_dir_i686 = os.path.join(self.config.sources, '..', 'i686-build')
             fgabd64 = self.build_dir

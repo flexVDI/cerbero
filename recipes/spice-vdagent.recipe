@@ -14,4 +14,4 @@ class Recipe(recipe.Recipe):
     use_system_libs = True
     deps = [ 'spice-protocol' ]
     configure_options = '--disable-dependency-tracking'
-    make_install = ''
+    make_install = 'make DESTDIR=target install'
