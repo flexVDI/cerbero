@@ -1,5 +1,5 @@
 import os
-from cerbero.config import Platform, Architecture, Distro
+from cerbero.config import Platform, Architecture, DistroVersion
 
 packages_prefix = ''
 packager = 'Cerbero User <cerbero@flexvdi.com>'
@@ -22,4 +22,6 @@ build_tools_cache = "/home/cerbero/build/build-tools.cache"
 prefix = "/usr/local"
 build_tools_prefix = prefix
 extra_build_tools = [ 'git' ]
+# Avoid forcing distro-based Glib/GTK+ module paths
+distro_version = target_distro_version = DistroVersion.DEBIAN_SQUEEZE
 
