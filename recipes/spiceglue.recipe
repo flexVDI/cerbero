@@ -1,5 +1,5 @@
 # -*- Mode: Python -*- vi:si:et:sw=4:sts=4:ts=4:syntax=python
-
+from cerbero.utils import shell
 
 class Recipe(recipe.Recipe):
     name = 'spiceglue'
@@ -29,3 +29,10 @@ class Recipe(recipe.Recipe):
         else:
             self.append_env['CFLAGS'] = ' -O2 -fPIC'
 
+    def post_install(self):
+        if self.config.target_platform == Platform.WINDOWS:
+            shell.call(' '.join([self.relative_path('spiceglue/find_dlls.sh'),
+                                 'deps.txt',
+                                 self.config.prefix,
+                                 os.path.join(self.config.prefix, 'bin', 'libspiceglue-0.dll')]),
+                       self.build_dir)
