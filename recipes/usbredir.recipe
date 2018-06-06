@@ -7,7 +7,7 @@ class Recipe(recipe.Recipe):
     version = '0.7.1'
     licenses = [License.LGPLv2_1Plus]
     commit = 'usbredir-0.7.1'
-    remotes = {'origin': 'git://github.com/SPICE/usbredir.git'}
+    remotes = {'origin': 'https://gitlab.freedesktop.org/spice/usbredir.git'}
 
     config_sh = 'sh autogen.sh'
     deps = ['libusb']
