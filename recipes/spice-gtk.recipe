@@ -4,7 +4,7 @@ class Recipe(recipe.Recipe):
     name = 'spice-gtk'
     version = '0.34-flexvdi'
     remotes = {'origin': 'https://github.com/flexVDI/spice-gtk.git'}
-    commit = 'v0.34-fv1'
+    commit = 'v0.34-fv2'
     # either LGPLv2.1 or MPLv1.1
     licenses = [License.LGPLv2_1]
     autoreconf = True 
@@ -20,8 +20,7 @@ class Recipe(recipe.Recipe):
             }
 
     patches = ['spice-gtk/0001-Do-not-build-tests.patch',
-               'spice-gtk/0002-Add-m4-path-for-autoreconf.patch',
-               'spice-gtk/0004-Fix-setting-appsrc-properties-in-i686-arch.patch']
+               'spice-gtk/0002-Add-m4-path-for-autoreconf.patch']
 
     files_devel = ['include/spice-client-glib-2.0',
                    'lib/pkgconfig/spice-client-glib-2.0.pc']

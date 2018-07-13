@@ -1,4 +1,4 @@
-From 541eb83456188ac6cbace33f17e5dd654aaf60f5 Mon Sep 17 00:00:00 2001
+From e4c8528ee621cf35b0cf1c16d8096683ad30ed3b Mon Sep 17 00:00:00 2001
 From: Jorge Olmos <jorge.olmos@flexvdi.com>
 Date: Wed, 12 Apr 2017 09:18:34 +0200
 Subject: [PATCH 2/3] Add m4 path for autoreconf
@@ -13,7 +13,7 @@ The missing macro is AM_GLIB_GNU_GETTEXT installed by glib.
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/Makefile.am b/Makefile.am
-index 3888e82..7b51907 100644
+index 3cc975c..ba26cd2 100644
 --- a/Makefile.am
 +++ b/Makefile.am
 @@ -1,4 +1,4 @@
@@ -23,5 +23,5 @@ index 3888e82..7b51907 100644
  
  SUBDIRS = spice-common src man po doc data
 -- 
-2.14.3
+2.17.0
 
