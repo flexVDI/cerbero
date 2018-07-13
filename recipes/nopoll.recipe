@@ -4,13 +4,11 @@
 class Recipe(recipe.Recipe):
     name = 'nopoll'
     version = '0.4.6'
-    commit = '1e15a5a'
+    commit = 'e80b74a'
     remotes = {'origin': 'https://github.com/ASPLes/nopoll.git'}
     licenses = [License.LGPLv2_1]
     config_sh = './autogen.sh'
     deps = ['openssl']
-    patches = ['nopoll/0001-Return-3-if-PING-was-the-only-frame-received.patch',
-               'nopoll/0002-Do-not-warn-about-unfinished-frames.patch']
 
     files_devel = ['include/nopoll',
                    'lib/pkgconfig/nopoll.pc']
