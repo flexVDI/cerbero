@@ -8,7 +8,7 @@ class Recipe(recipe.Recipe):
     # either LGPLv2.1 or MPLv1.1
     licenses = [License.LGPLv2_1]
     autoreconf = True 
-    autoreconf_sh = 'NOCONFIGURE=1 ./autogen.sh'
+    autoreconf_sh = 'NOCONFIGURE=1 ./autogen.sh && sed -i s/tests// spice-common/Makefile.*'
     make_check = None
 
     deps = ['glib', 'libpng', 'zlib', 'pixman', 'fontconfig', 'freetype', 'gtk-doc-lite',
