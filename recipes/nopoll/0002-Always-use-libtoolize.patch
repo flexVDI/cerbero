@@ -1,0 +1,32 @@
+From 759b5e52b792b1cc505c5ff68605b393a7715aa6 Mon Sep 17 00:00:00 2001
+From: Javier Celaya <javier.celaya@flexvdi.com>
+Date: Wed, 18 Jul 2018 13:24:22 +0200
+Subject: [PATCH] Always use libtoolize
+
+---
+ autogen.sh | 9 +--------
+ 1 file changed, 1 insertion(+), 8 deletions(-)
+
+diff --git a/autogen.sh b/autogen.sh
+index d36fdcb..75deffb 100755
+--- a/autogen.sh
++++ b/autogen.sh
+@@ -45,14 +45,7 @@ echo "Generating configuration files for $PACKAGE, please wait...."
+ echo; 
+ 
+ touch NEWS README AUTHORS ChangeLog 
+-if [ "${OS}" = "Linux" ] ; then
+-   libtoolize --force;
+-elif [ "${OS}" = "Darwin" ] ; then
+-   glibtoolize --force;
+-else
+-   # by default, try libtoolize even if it is not uname or OS is not recognized.
+-   libtoolize --force;
+-fi
++libtoolize --force;
+ aclocal $ACLOCAL_FLAGS; 
+ autoheader --warnings=error
+ automake --add-missing -Werror;
+-- 
+2.17.0
+

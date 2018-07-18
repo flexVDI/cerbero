@@ -1,0 +1,26 @@
+From 0a172c0162117225684d38ac1abffde577a5aefc Mon Sep 17 00:00:00 2001
+From: Javier Celaya <javier.celaya@flexvdi.com>
+Date: Wed, 18 Jul 2018 12:18:45 +0200
+Subject: [PATCH] Do not build tests
+
+---
+ Makefile.am | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
+
+diff --git a/Makefile.am b/Makefile.am
+index fd06b5b..c9cbb05 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -1,8 +1,4 @@
+-if ENABLE_NOPOLL_DOC
+-NOPOLL_DOC_DIR = doc
+-endif
+-
+-SUBDIRS = src  test $(NOPOLL_DOC_DIR)
++SUBDIRS = src
+ EXTRA_DIST = nopoll.pc.in VERSION Makefile.win
+ pkgconfigdir = $(libdir)/pkgconfig
+ pkgconfig_DATA = nopoll.pc
+-- 
+2.17.0
+
