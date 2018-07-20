@@ -12,11 +12,11 @@ class Recipe(recipe.Recipe):
     make_check = None
 
     deps = ['glib', 'libpng', 'zlib', 'pixman', 'fontconfig', 'freetype', 'gtk-doc-lite',
-            'gstreamer-1.0', 'gst-plugins-base-1.0', 'gst-plugins-good-1.0', 'phodav',
+            'gstreamer-1.0', 'gst-plugins-base-1.0', 'gst-plugins-good-1.0',
             'spice-protocol', 'nopoll', 'libjpeg-turbo', 'opus', 'pyparsing', 'six']
     platform_deps = {
-            Platform.WINDOWS: [ 'gtk+3', 'usbredir', 'librsvg' ],
-            Platform.LINUX: [ 'gtk+3', 'usbredir', 'librsvg', 'libva-intel-driver' ]
+            Platform.WINDOWS: [ 'gtk+3', 'usbredir', 'librsvg', 'phodav' ],
+            Platform.LINUX: [ 'gtk+3', 'usbredir', 'librsvg', 'libva-intel-driver', 'phodav' ]
             }
 
     patches = ['spice-gtk/0001-Do-not-build-tests.patch',
