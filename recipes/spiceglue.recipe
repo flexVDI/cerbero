@@ -4,7 +4,7 @@ from cerbero.utils import shell
 class Recipe(recipe.Recipe):
     name = 'spiceglue'
     version = '2.2'
-    commit = '14eaca9'
+    commit = 'f0d7b5e'
     remotes = {'origin': 'https://github.com/flexvdi/spiceglue'}
 
     autoreconf = True 
