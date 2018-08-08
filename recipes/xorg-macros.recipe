@@ -9,4 +9,8 @@ class Recipe(recipe.Recipe):
     licenses = [License.BSD_like]
     autoreconf = True
     autoreconf_sh = './autogen.sh'
+    configure_tpl = './configure %(options)s'
     deps = []
+
+    def prepare(self):
+        self.configure_options += ' -prefix ' + self.config.build_tools_prefix
