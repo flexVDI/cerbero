@@ -4,10 +4,10 @@
 class Recipe(recipe.Recipe):
 
     name = 'flexdp'
-    version = '2.2.3'
+    version = '2.2.4'
     licenses = [License.LGPLv2_1]
     remotes = {'origin': 'https://git.flexvdi.com/scm/flexvdi/flexdp.git'}
-    commit = '2.2.3'
+    commit = '2.2.4'
 
     deps = ['spice-protocol'] 
 
