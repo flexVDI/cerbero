@@ -32,3 +32,10 @@ class Recipe(recipe.Recipe):
             self.patches += ['libtheora/0007-Don-t-use-fforce-addr.patch']
         elif self.config.cross_compiling():
             self.configure_options += ' --disable-examples'
+
+    def configure(self):
+        if self.config.cross_compiling() and self.config.target_platform == Platform.WINDOWS:
+            for f in [ 'libtheoraenc-all.def', 'libtheoradec-all.def' ]:
+                shell.replace(os.path.join(self.build_dir, 'win32', 'xmingw32', f), { '\r\n': '\n' })
+        super(Recipe, self).configure()
+
