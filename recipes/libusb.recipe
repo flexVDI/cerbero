@@ -4,9 +4,9 @@
 class Recipe(recipe.Recipe):
 
     name = 'libusb'
-    version = '1.20a'
+    version = '1.0.22'
     licenses = [License.LGPLv2_1]
-    commit = '6de66bb'
+    commit = 'v1.0.22'
     remotes = {'origin': 'git://github.com/libusb/libusb.git'}
 
     config_sh = 'sh autogen.sh'
