@@ -4,9 +4,9 @@
 class Recipe(recipe.Recipe):
 
     name = 'usbredir'
-    version = '0.7.1'
+    version = '0.8.0'
     licenses = [License.LGPLv2_1Plus]
-    commit = 'usbredir-0.7.1'
+    commit = 'usbredir-0.8.0'
     remotes = {'origin': 'https://gitlab.freedesktop.org/spice/usbredir.git'}
 
     config_sh = 'sh autogen.sh'
