@@ -1,0 +1,21 @@
+# -*- Mode: Python -*- vi:si:et:sw=4:sts=4:ts=4:syntax=python
+import shutil
+
+class Recipe(recipe.Recipe):
+    name = 'flexvdi-client'
+    version = '3.0.0'
+    licenses = [License.LGPLv2_1]
+    remotes = {'origin': 'https://github.com/flexVDI/flexvdi-client.git'}
+    commit = '3.0.0'
+    btype = BuildType.CMAKE
+    use_system_libs = True
+
+    deps = ['flexdp', 'glib', 'libsoup', 'json-glib', 'spice-gtk']
+    platform_deps = {
+        Platform.WINDOWS: [ 'poppler', 'cairo' ],
+        Platform.LINUX: [ 'libcups' ],
+        Platform.DARWIN: [ 'libcups' ]
+    }
+
+    def prepare(self):
+        self.append_env['CFLAGS'] = " ${LDFLAGS} "
