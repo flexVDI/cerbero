@@ -4,7 +4,7 @@ class Recipe(recipe.Recipe):
     name = 'spice-gtk'
     version = '0.34-flexvdi'
     remotes = {'origin': 'https://github.com/flexVDI/spice-gtk.git'}
-    commit = 'v0.34-fv2'
+    commit = 'v0.34-fv4'
     # either LGPLv2.1 or MPLv1.1
     licenses = [License.LGPLv2_1]
     autoreconf = True 
