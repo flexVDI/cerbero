@@ -1,6 +1,6 @@
-From 094660e9a9d184578a7421b7f68d047608141158 Mon Sep 17 00:00:00 2001
-From: "jorge.olmos" <jorge.olmos@flexvdi.com>
-Date: Thu, 7 Apr 2016 12:55:41 +0200
+From c77e2b470c456e07f1668732808f1d87858214b2 Mon Sep 17 00:00:00 2001
+From: Javier Celaya <javier.celaya@flexvdi.com>
+Date: Fri, 24 Aug 2018 10:16:04 +0200
 Subject: [PATCH] Use host gtk-update-icon-cache
 
 Because the one we have just build will not work when crosscompiling
@@ -12,57 +12,57 @@ Because the one we have just build will not work when crosscompiling
  4 files changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/demos/gtk-demo/Makefile.am b/demos/gtk-demo/Makefile.am
-index 4b68459..183d109 100644
+index decba7d..256588f 100644
 --- a/demos/gtk-demo/Makefile.am
 +++ b/demos/gtk-demo/Makefile.am
-@@ -173,7 +173,7 @@ dist_appsicon32_DATA = data/32x32/gtk3-demo.png data/32x32/gtk3-demo-symbolic.sy
+@@ -176,7 +176,7 @@ dist_appsicon32_DATA = data/32x32/gtk3-demo.png data/32x32/gtk3-demo-symbolic.sy
  dist_appsicon48_DATA = data/48x48/gtk3-demo.png data/48x48/gtk3-demo-symbolic.symbolic.png
  dist_appsicon256_DATA = data/256x256/gtk3-demo.png data/256x256/gtk3-demo-symbolic.symbolic.png
  
--update_icon_cache = $(top_builddir)/gtk/gtk-update-icon-cache --ignore-theme-index --force
+-update_icon_cache = $(top_builddir)/gtk/gtk-update-icon-cache$(EXEEXT) --ignore-theme-index --force
 +update_icon_cache = gtk-update-icon-cache --ignore-theme-index --force
  
  install-data-hook: install-update-icon-cache
  uninstall-hook: uninstall-update-icon-cache
 diff --git a/demos/gtk-demo/Makefile.in b/demos/gtk-demo/Makefile.in
-index c1bd9f6..f3e4f01 100644
+index 9c5c05f..4556f6c 100644
 --- a/demos/gtk-demo/Makefile.in
 +++ b/demos/gtk-demo/Makefile.in
-@@ -694,7 +694,7 @@ dist_appsicon24_DATA = data/24x24/gtk3-demo.png data/24x24/gtk3-demo-symbolic.sy
+@@ -745,7 +745,7 @@ dist_appsicon24_DATA = data/24x24/gtk3-demo.png data/24x24/gtk3-demo-symbolic.sy
  dist_appsicon32_DATA = data/32x32/gtk3-demo.png data/32x32/gtk3-demo-symbolic.symbolic.png
  dist_appsicon48_DATA = data/48x48/gtk3-demo.png data/48x48/gtk3-demo-symbolic.symbolic.png
  dist_appsicon256_DATA = data/256x256/gtk3-demo.png data/256x256/gtk3-demo-symbolic.symbolic.png
--update_icon_cache = $(top_builddir)/gtk/gtk-update-icon-cache --ignore-theme-index --force
+-update_icon_cache = $(top_builddir)/gtk/gtk-update-icon-cache$(EXEEXT) --ignore-theme-index --force
 +update_icon_cache = gtk-update-icon-cache --ignore-theme-index --force
- DISTCLEANFILES = demos.h
- all: $(BUILT_SOURCES)
- 	$(MAKE) $(AM_MAKEFLAGS) all-am
+ 
+ # ------------------- MSVC Build Items ----------------
+ MSVCPROJS = gtk3-demo gtk3-demo-application
 diff --git a/demos/widget-factory/Makefile.am b/demos/widget-factory/Makefile.am
-index b9c481d..9c057ff 100644
+index a6bfbdc..b33b567 100644
 --- a/demos/widget-factory/Makefile.am
 +++ b/demos/widget-factory/Makefile.am
 @@ -47,7 +47,7 @@ dist_appsicon32_DATA = data/32x32/gtk3-widget-factory.png data/32x32/gtk3-widget
  dist_appsicon48_DATA = data/48x48/gtk3-widget-factory.png data/48x48/gtk3-widget-factory-symbolic.symbolic.png
  dist_appsicon256_DATA = data/256x256/gtk3-widget-factory.png data/256x256/gtk3-widget-factory-symbolic.symbolic.png
  
--update_icon_cache = $(top_builddir)/gtk/gtk-update-icon-cache --ignore-theme-index --force
+-update_icon_cache = $(top_builddir)/gtk/gtk-update-icon-cache$(EXEEXT) --ignore-theme-index --force
 +update_icon_cache = gtk-update-icon-cache --ignore-theme-index --force
  
  install-data-hook: install-update-icon-cache
  uninstall-hook: uninstall-update-icon-cache
 diff --git a/demos/widget-factory/Makefile.in b/demos/widget-factory/Makefile.in
-index 8261fcd..d75ab0b 100644
+index afce033..7c48f50 100644
 --- a/demos/widget-factory/Makefile.in
 +++ b/demos/widget-factory/Makefile.in
-@@ -555,7 +555,7 @@ dist_appsicon24_DATA = data/24x24/gtk3-widget-factory.png data/24x24/gtk3-widget
+@@ -567,7 +567,7 @@ dist_appsicon24_DATA = data/24x24/gtk3-widget-factory.png data/24x24/gtk3-widget
  dist_appsicon32_DATA = data/32x32/gtk3-widget-factory.png data/32x32/gtk3-widget-factory-symbolic.symbolic.png
  dist_appsicon48_DATA = data/48x48/gtk3-widget-factory.png data/48x48/gtk3-widget-factory-symbolic.symbolic.png
  dist_appsicon256_DATA = data/256x256/gtk3-widget-factory.png data/256x256/gtk3-widget-factory-symbolic.symbolic.png
--update_icon_cache = $(top_builddir)/gtk/gtk-update-icon-cache --ignore-theme-index --force
+-update_icon_cache = $(top_builddir)/gtk/gtk-update-icon-cache$(EXEEXT) --ignore-theme-index --force
 +update_icon_cache = gtk-update-icon-cache --ignore-theme-index --force
  all: $(BUILT_SOURCES)
  	$(MAKE) $(AM_MAKEFLAGS) all-am
  
 -- 
-2.5.0
+2.17.0
 

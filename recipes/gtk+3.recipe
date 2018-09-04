@@ -3,7 +3,7 @@
 
 class Recipe(recipe.Recipe):
     name = 'gtk+3'
-    version = '3.16.4'
+    version = '3.22.30'
     # TODO: check license - some source files are LGPLv2, others LGPLv2+,
     #       others LGPLv2.1+, COPYING is LGPLv2 and the webpage states LGPLv2.1
     licenses = [License.LGPLv2_1Plus]
@@ -15,10 +15,9 @@ class Recipe(recipe.Recipe):
     use_system_libs = True
 
     stype = SourceType.TARBALL
-    url = 'http://ftp.gnome.org/pub/GNOME/sources/gtk+/3.16/gtk+-%(version)s.tar.xz'
+    url = 'http://ftp.gnome.org/pub/GNOME/sources/gtk+/3.22/gtk+-%(version)s.tar.xz'
     tarball_dirname = 'gtk+-%(version)s'
 
-    patches = ['gtk+3/0001-x11-Avoid-X-error-traps-within-server-grabs.patch']
     files_libs = ['libgailutil-3', 'libgdk-3', 'libgtk-3']
 
     files_bins = ['gtk3-widget-factory',
@@ -98,18 +97,17 @@ class Recipe(recipe.Recipe):
 
         # This is needed when cross compiling, which now implies x86_64-pc-linux on cerbero
         if self.config.target_platform != Platform.LINUX and self.config.build == 'x86_64-pc-linux':
-            self.patches.append('gtk+3/0002-Use-host-gtk-update-icon-cache.patch')
+            self.patches = ['gtk+3/0002-Use-host-gtk-update-icon-cache.patch']
 
         if self.config.target_platform != Platform.LINUX:
             self.configure_options += '--disable-gtk-doc '
         if self.config.target_platform == Platform.WINDOWS:
             self.configure_options += '--disable-papi --disable-cups '
+            # This recipe requires at least Windows 7
+            self.append_env['CFLAGS'] = ' -UWINVER -U_WIN32_WINNT -DWINVER=0x0601 -D_WIN32_WINNT=0x0601'
                 
         elif self.config.target_platform == Platform.DARWIN:
             self.configure_options += '--enable-quartz-backend '
-            # this patch will break on other OSs without objective-c compiler installed
-            self.patches.append('gtk+3/0001-osx-fix-build-of-quartz-input-module.patch')
-            self.patches.append('gtk+3/0002-osx-configure-fix-detecting-CUPS-2-x.patch')
         elif self.config.target_platform == Platform.LINUX:
             # Can't change CFLAGS and use configure cache
             self.can_use_configure_cache = False
