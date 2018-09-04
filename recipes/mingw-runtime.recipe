@@ -4,13 +4,13 @@ import shutil
 
 class Recipe(recipe.Recipe):
     name = 'mingw-runtime'
-    version = '0.1'
+    version = '0.2'
     licenses = [License.LGPL]
     btype = BuildType.CUSTOM
     stype = SourceType.CUSTOM
     runtime_dep = True
 
-    files_libs = ['libstdc++', 'libwinpthread', 'libgomp', 'libgcc_s_sjlj']
+    files_libs = ['libstdc++', 'libwinpthread', 'libgcc_s_sjlj']
     files_satic = []
     files_headers = ['include/GL']
 
@@ -22,7 +22,7 @@ class Recipe(recipe.Recipe):
                                    '%(host)s/lib/libdxerr9.a',
                                    '%(host)s/lib/libmoldname.a']
         if self.config.platform == Platform.WINDOWS:
-            self.mingw_static_files += ['%(mingw)s/lib/gcc/%(host)s/4.7.3/libgcc.a']
+            self.mingw_static_files += ['%(mingw)s/lib/gcc/%(host)s/4.9.4/libgcc.a']
         # static build deps
         if self.config.platform == Platform.WINDOWS:
             # the native compiler install libraries in 'lib' and
@@ -53,7 +53,7 @@ class Recipe(recipe.Recipe):
             shutil.copy(
                 os.path.join(self.config.toolchain_prefix, 'bin', f + '.dll'),
                 os.path.join(self.config.prefix, 'bin', f + '.dll'))
-        for f in ['libgomp-1', 'libstdc++-6']:
+        for f in ['libstdc++-6']:
             shutil.copy(
                 os.path.join(self.config.toolchain_prefix, binmingw, f + '.dll'),
                 os.path.join(self.config.prefix, 'bin', f + '.dll'))
@@ -62,7 +62,7 @@ class Recipe(recipe.Recipe):
                 os.path.join(self.config.toolchain_prefix, libmingw, f + '.dll'),
                 os.path.join(self.config.prefix, 'bin', f + '.dll'))
         # copy the development libraries
-        for f in ['libstdc++', 'libgomp']:
+        for f in ['libstdc++']:
             # Copy the dll.a
             shutil.copy(
                 os.path.join(self.config.toolchain_prefix, libmingw, f + '.dll.a'),
@@ -79,11 +79,11 @@ class Recipe(recipe.Recipe):
                     d.writelines(content)
         # copy winpthreads
         for f in ['libpthread', 'libwinpthread']:
-            shutil.copy(os.path.join(self.config.toolchain_prefix, 'lib', f + '.dll.a'),
+            shutil.copy(os.path.join(self.config.toolchain_prefix, libmingw, f + '.dll.a'),
                 os.path.join(self.config.prefix, 'lib', f + '.dll.a'))
-            shutil.copy(os.path.join(self.config.toolchain_prefix, 'lib', f + '.a'),
+            shutil.copy(os.path.join(self.config.toolchain_prefix, libmingw, f + '.a'),
                 os.path.join(self.config.prefix, 'lib', f + '.a'))
-        src = os.path.join(self.config.toolchain_prefix, 'lib', 'libwinpthread' + '.la')
+        src = os.path.join(self.config.toolchain_prefix, libmingw, 'libwinpthread' + '.la')
         dest = os.path.join(self.config.prefix, 'lib', f + '.la')
         if os.path.exists(dest):
             os.remove(dest)
