@@ -1,0 +1,76 @@
+From 8562814bc1941e0d4a17761d0e470f81c26fd83b Mon Sep 17 00:00:00 2001
+From: Javier Celaya <javier.celaya@nologin.com>
+Date: Wed, 5 Sep 2018 09:52:25 +0200
+Subject: [PATCH] Fix building libstatic-im-quartz
+
+---
+ modules/input/Makefile.am |  1 +
+ modules/input/Makefile.in | 12 ++++++++++--
+ 2 files changed, 11 insertions(+), 2 deletions(-)
+
+diff --git a/modules/input/Makefile.am b/modules/input/Makefile.am
+index 34c5f38..8e18e64 100644
+--- a/modules/input/Makefile.am
++++ b/modules/input/Makefile.am
+@@ -151,6 +151,7 @@ endif
+ im_quartz_la_CPPFLAGS = $(AM_CPPFLAGS) -xobjective-c
+ im_quartz_la_LDFLAGS = -rpath $(moduledir) -avoid-version -module $(no_undefined)
+ im_quartz_la_SOURCES = imquartz.c
++libstatic_im_quartz_la_CPPFLAGS = $(im_quartz_la_CPPFLAGS)
+ libstatic_im_quartz_la_SOURCES = $(im_quartz_la_SOURCES)
+ im_quartz_la_LIBADD = $(LDADDS)
+ if INCLUDE_IM_QUARTZ
+diff --git a/modules/input/Makefile.in b/modules/input/Makefile.in
+index 19e013c..e8859a9 100644
+--- a/modules/input/Makefile.in
++++ b/modules/input/Makefile.in
+@@ -332,7 +332,7 @@ libstatic_im_multipress_la_OBJECTS =  \
+ 	$(am_libstatic_im_multipress_la_OBJECTS)
+ @INCLUDE_IM_MULTIPRESS_TRUE@am_libstatic_im_multipress_la_rpath =
+ libstatic_im_quartz_la_LIBADD =
+-am__objects_10 = imquartz.lo
++am__objects_10 = libstatic_im_quartz_la-imquartz.lo
+ am_libstatic_im_quartz_la_OBJECTS = $(am__objects_10)
+ libstatic_im_quartz_la_OBJECTS = $(am_libstatic_im_quartz_la_OBJECTS)
+ @INCLUDE_IM_QUARTZ_TRUE@am_libstatic_im_quartz_la_rpath =
+@@ -882,6 +882,7 @@ libstatic_im_ime_la_LIBADD = -limm32
+ im_quartz_la_CPPFLAGS = $(AM_CPPFLAGS) -xobjective-c
+ im_quartz_la_LDFLAGS = -rpath $(moduledir) -avoid-version -module $(no_undefined)
+ im_quartz_la_SOURCES = imquartz.c
++libstatic_im_quartz_la_CPPFLAGS = $(im_quartz_la_CPPFLAGS)
+ libstatic_im_quartz_la_SOURCES = $(im_quartz_la_SOURCES)
+ im_quartz_la_LIBADD = $(LDADDS)
+ @INCLUDE_IM_QUARTZ_TRUE@STATIC_QUARTZ_MODULE = libstatic-im-quartz.la
+@@ -1152,7 +1153,6 @@ distclean-compile:
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/imime.Plo@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/iminuktitut.Plo@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/imipa.Plo@am__quote@
+-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/imquartz.Plo@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/imthai.Plo@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/imti-er.Plo@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/imti-et.Plo@am__quote@
+@@ -1161,6 +1161,7 @@ distclean-compile:
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/imxim.Plo@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libstatic_im_multipress_la-gtkimcontextmultipress.Plo@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libstatic_im_multipress_la-immultipress.Plo@am__quote@
++@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libstatic_im_quartz_la-imquartz.Plo@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/thai-charprop.Plo@am__quote@
+ 
+ .c.o:
+@@ -1243,6 +1244,13 @@ libstatic_im_multipress_la-immultipress.lo: immultipress.c
+ @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+ @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libstatic_im_multipress_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libstatic_im_multipress_la-immultipress.lo `test -f 'immultipress.c' || echo '$(srcdir)/'`immultipress.c
+ 
++libstatic_im_quartz_la-imquartz.lo: imquartz.c
++@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libstatic_im_quartz_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libstatic_im_quartz_la-imquartz.lo -MD -MP -MF $(DEPDIR)/libstatic_im_quartz_la-imquartz.Tpo -c -o libstatic_im_quartz_la-imquartz.lo `test -f 'imquartz.c' || echo '$(srcdir)/'`imquartz.c
++@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libstatic_im_quartz_la-imquartz.Tpo $(DEPDIR)/libstatic_im_quartz_la-imquartz.Plo
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='imquartz.c' object='libstatic_im_quartz_la-imquartz.lo' libtool=yes @AMDEPBACKSLASH@
++@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
++@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libstatic_im_quartz_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libstatic_im_quartz_la-imquartz.lo `test -f 'imquartz.c' || echo '$(srcdir)/'`imquartz.c
++
+ mostlyclean-libtool:
+ 	-rm -f *.lo
+ 
+-- 
+2.17.1
+

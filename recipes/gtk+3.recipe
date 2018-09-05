@@ -108,6 +108,7 @@ class Recipe(recipe.Recipe):
                 
         elif self.config.target_platform == Platform.DARWIN:
             self.configure_options += '--enable-quartz-backend '
+            self.patches = ['gtk+3/0001-Fix-building-libstatic-im-quartz.patch']
         elif self.config.target_platform == Platform.LINUX:
             # Can't change CFLAGS and use configure cache
             self.can_use_configure_cache = False
