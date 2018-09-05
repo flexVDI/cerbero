@@ -16,7 +16,8 @@ class Recipe(recipe.Recipe):
             'spice-protocol', 'nopoll', 'libjpeg-turbo', 'opus', 'pyparsing', 'six']
     platform_deps = {
             Platform.WINDOWS: [ 'gtk+3', 'usbredir', 'librsvg', 'phodav' ],
-            Platform.LINUX: [ 'gtk+3', 'usbredir', 'librsvg', 'libva-intel-driver', 'phodav' ]
+            Platform.LINUX: [ 'gtk+3', 'usbredir', 'librsvg', 'libva-intel-driver', 'phodav' ],
+            Platform.DARWIN: [ 'gtk+3' ]
             }
 
     patches = ['spice-gtk/0001-Do-not-build-tests.patch',
@@ -33,10 +34,11 @@ class Recipe(recipe.Recipe):
         self.configure_options += ' --disable-pulse --disable-builtin-mjpeg'
 
         if self.config.target_platform in [Platform.IOS, 
-                                          Platform.DARWIN,
                                           Platform.ANDROID]:
             self.configure_options += ' --enable-static --with-gtk=no --with-coroutine=gthread '
             self.patches += ['spice-gtk/0003-Remove-missing-symbols-from-export-files.patch']
+        if self.config.target_platform == Platform.DARWIN:
+            self.configure_options += ' --with-coroutine=gthread --disable-introspection CPPFLAGS=" -xobjective-c"'
         elif self.config.target_platform == Platform.WINDOWS:
             self.configure_options += ' --enable-tools' # Build spicy for Windows Dashboard
             self.configure_options += ' --enable-usbredir --with-usb-ids-path=./usb.ids'
