@@ -20,26 +20,14 @@ GLIB_CONFIG_UNVERSAL='''\
 
 class Recipe(recipe.Recipe):
     name = 'glib'
-    version = '2.54.2'
+    version = '2.58.0'
     stype = SourceType.TARBALL
-    url = 'http://ftp.acc.umu.se/pub/GNOME/sources/glib/2.54/glib-%(version)s.tar.xz'
+    url = 'http://ftp.acc.umu.se/pub/GNOME/sources/glib/2.58/glib-%(version)s.tar.xz'
     licenses = [License.LGPLv2Plus]
     config_sh = 'sh autogen.sh'
     configure_options = '--with-pcre=internal --disable-libmount --enable-dtrace=no '
     deps = ['libffi', 'zlib']
     can_use_configure_cache = False
-    patches = ["glib/0001-Let-user-disable-Cocoa-and-Carbon-support-on-demand.patch",
-               "glib/0002-Optionally-revert-to-the-old-pre-2.28-URI-handler-co.patch",
-               "glib/0003-Add-support-for-loading-GIO-modules-from-the-distro-.patch",
-               "glib/0004-Allow-for-a-second-distro-GIO-module-path-as-used-on.patch",
-               "glib/0005-Blacklist-the-bamf-GIO-module.patch",
-               "glib/0006-giomodule-do-not-try-to-load-modules-from-gio-module.patch",
-               "glib/0008-Unhide-_g_io_modules_ensure_extension_points_registe.patch",
-               'glib/0009-Implementation-of-Cocoa-event-loop-integration-in-GM.patch',
-               'glib/0010-GSocket-Fix-race-conditions-on-Win32-if-multiple-thr.patch',
-               'glib/0013-gmain-Fix-erroneous-if-condition-when-dtrace-is-disa.patch',
-               'glib/0001-gmodule-Use-RTLD_DEFAULT-if-defined-__BIONIC__.patch'
-              ]
 
     files_libs = [
         'libglib-2.0', 'libgio-2.0', 'libgmodule-2.0', 'libgobject-2.0',
@@ -187,10 +175,6 @@ class Recipe(recipe.Recipe):
             self._set_gio_flags(path1, path2, use_old_uri_scheme)
 
     def post_install(self):
-        if self.config.target_platform == Platform.WINDOWS:
-            shutil.copy(os.path.join(self.build_dir, 'glib', 'glibconfig.h.win32'),
-                        os.path.join(self.config.prefix, 'lib', 'glib-2.0',
-                                     'include', 'glibconfig.h'))
         if self.config.target_platform in [Platform.DARWIN, Platform.IOS]:
             # For the universal build we need to ship glibconfig.h of both
             # architectures in a subfolder and include the correct one depending
