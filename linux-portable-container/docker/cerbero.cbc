@@ -5,23 +5,18 @@ packages_prefix = ''
 packager = 'Cerbero User <cerbero@flexvdi.com>'
 git_root = "https://github.com/flexVDI"
 
-# Uncomment to allow parallel builds
 allow_parallel_build = True
-
-# Uncomment this to allow cross-building for another architecture
-# target_arch = Architecture.X86_64
 variants = [ 'alsa' ]
 
 distro_packages_install = False
-local_sources = "/home/cerbero/src"
-sources = "/home/cerbero/build"
-logs = "/home/cerbero/build/logs"
-cache_file = "/home/cerbero/build/build.cache"
-build_tools_sources = "/home/cerbero/build/build-tools"
-build_tools_cache = "/home/cerbero/build/build-tools.cache"
-prefix = "/usr/local"
-build_tools_prefix = prefix
+home_dir = '/home/cerbero/build'
+__arch__
+__build__
+build_tools_sources = "/home/cerbero/build/sources/build-tools-lpc-" + arch
+build_tools_prefix = "/home/cerbero/build/build-tools-lpc-" + arch
+build_tools_cache = build_tools_prefix + ".cache"
 extra_build_tools = [ 'git' ]
+
 # Avoid forcing distro-based Glib/GTK+ module paths
 distro_version = target_distro_version = DistroVersion.DEBIAN_SQUEEZE
 
