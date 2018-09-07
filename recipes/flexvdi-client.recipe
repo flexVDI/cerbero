@@ -1,12 +1,11 @@
 # -*- Mode: Python -*- vi:si:et:sw=4:sts=4:ts=4:syntax=python
-import shutil
 
 class Recipe(recipe.Recipe):
     name = 'flexvdi-client'
     version = '3.0.0'
     licenses = [License.LGPLv2_1]
     remotes = {'origin': 'https://github.com/flexVDI/flexvdi-client.git'}
-    commit = '3.0.0'
+    commit = '3.0.0-rc1'
     btype = BuildType.CMAKE
     use_system_libs = True
 
