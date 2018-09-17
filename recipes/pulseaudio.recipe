@@ -14,4 +14,4 @@ class Recipe(recipe.Recipe):
     def prepare(self):
         if self.config.target_platform == Platform.LINUX:
             self.use_system_libs = True
-            self.configure_options += ' --with-udev-rules-dir=/usr/local/lib/udev/rules.d --without-caps'
+            self.configure_options += ' --with-udev-rules-dir={}/lib/udev/rules.d --without-caps'.format(self.config.prefix)
