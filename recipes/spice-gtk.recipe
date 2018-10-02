@@ -16,7 +16,7 @@ class Recipe(recipe.Recipe):
             'spice-protocol', 'nopoll', 'libjpeg-turbo', 'opus', 'pyparsing', 'six']
     platform_deps = {
             Platform.WINDOWS: [ 'gtk+3', 'usbredir', 'librsvg', 'phodav' ],
-            Platform.LINUX: [ 'gtk+3', 'usbredir', 'librsvg', 'libva-intel-driver', 'phodav' ],
+            Platform.LINUX: [ 'gtk+3', 'usbredir', 'librsvg', 'phodav' ],
             Platform.DARWIN: [ 'gtk+3' ]
             }
 
