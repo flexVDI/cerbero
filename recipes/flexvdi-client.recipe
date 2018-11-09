@@ -5,7 +5,7 @@ class Recipe(recipe.Recipe):
     version = '3.0.0'
     licenses = [License.LGPLv2_1]
     remotes = {'origin': 'https://github.com/flexVDI/flexvdi-client.git'}
-    commit = '4a2c93e'
+    commit = '3cd3b2a'
     btype = BuildType.CMAKE
     use_system_libs = True
 
@@ -13,7 +13,7 @@ class Recipe(recipe.Recipe):
     platform_deps = {
         Platform.WINDOWS: [ 'poppler', 'cairo' ],
         Platform.LINUX: [ 'libcups' ],
-        Platform.DARWIN: [ 'libcups' ]
+        Platform.DARWIN: [ 'libcups', 'gtk-mac-bundler' ]
     }
 
     def prepare(self):
