@@ -1,0 +1,21 @@
+# -*- Mode: Python -*- vi:si:et:sw=4:sts=4:ts=4:syntax=python
+from cerbero.utils import shell
+
+class Recipe(recipe.Recipe):
+    name = 'gtk-mac-bundler'
+    version = '0.7.4'
+    remotes = {'origin': 'https://gitlab.gnome.org/GNOME/gtk-mac-bundler.git'}
+    commit = 'bundler-' + version
+    licenses = [License.LGPL]
+    btype = BuildType.CUSTOM
+
+    def compile(self):
+        # Do not setup pango as we have built it with static modules
+        shell.call("sed -i 's/self.create_pango_setup/#self.create_pango_setup/' bundler/bundler.py", self.build_dir)
+        # There is no hicolor theme either
+        shell.call("sed -i 's/themes.append.*hicolor.*/pass/' bundler/project.py", self.build_dir)
+
+    def install(self):
+        shell.copy_dir(
+            os.path.join(self.build_dir, 'bundler'),
+            os.path.join(self.config.prefix, 'lib', 'python2.7', 'site-packages', 'bundler'))
