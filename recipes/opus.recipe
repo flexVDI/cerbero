@@ -16,9 +16,3 @@ class Recipe(recipe.Recipe):
     # option is there. Note that there is separate NEON/intrinsics support for
     # ARM and x86.
     # configure_options = '--disable-fixed-point --enable-asm'
-
-    # There is a bug in opus that shows after updating spice server to 0.14
-    # on windows platform only. It is in SSE code, so we disable this optimization
-    def prepare(self):
-        if self.config.target_platform == Platform.WINDOWS:
-            self.configure_options += ' --disable-intrinsics'
