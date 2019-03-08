@@ -2,26 +2,23 @@
 
 class Recipe(recipe.Recipe):
     name = 'spice-gtk'
-    version = '0.34-flexvdi'
-    remotes = {'origin': 'https://github.com/flexVDI/spice-gtk.git'}
-    commit = 'v0.34-fv4'
+    version = '0.36'
+    remotes = {'origin': 'https://gitlab.freedesktop.org/spice/spice-gtk.git'}
+    commit = 'v%s' % version
     # either LGPLv2.1 or MPLv1.1
     licenses = [License.LGPLv2_1]
     autoreconf = True 
-    autoreconf_sh = 'NOCONFIGURE=1 ./autogen.sh && sed -i s/tests// spice-common/Makefile.*'
+    autoreconf_sh = 'NOCONFIGURE=1 ./autogen.sh && sed -i s/tests// subprojects/spice-common/Makefile.*'
     make_check = None
 
     deps = ['glib', 'libpng', 'zlib', 'pixman', 'fontconfig', 'freetype', 'gtk-doc-lite',
             'gstreamer-1.0', 'gst-plugins-base-1.0', 'gst-plugins-good-1.0',
-            'spice-protocol', 'nopoll', 'libjpeg-turbo', 'opus', 'pyparsing', 'six']
+            'spice-protocol', 'libjpeg-turbo', 'opus', 'pyparsing', 'six']
     platform_deps = {
-            Platform.WINDOWS: [ 'gtk+3', 'usbredir', 'librsvg', 'phodav' ],
-            Platform.LINUX: [ 'gtk+3', 'usbredir', 'librsvg', 'phodav' ],
-            Platform.DARWIN: [ 'gtk+3' ]
+            Platform.WINDOWS: [ 'gtk+3', 'usbredir', 'phodav' ],
+            Platform.LINUX: [ 'gtk+3', 'usbredir', 'phodav' ],
+            Platform.DARWIN: [ 'gtk+3', 'phodav' ]
             }
-
-    patches = ['spice-gtk/0001-Do-not-build-tests.patch',
-               'spice-gtk/0002-Add-m4-path-for-autoreconf.patch']
 
     files_devel = ['include/spice-client-glib-2.0',
                    'lib/pkgconfig/spice-client-glib-2.0.pc']
@@ -36,7 +33,7 @@ class Recipe(recipe.Recipe):
         if self.config.target_platform in [Platform.IOS, 
                                           Platform.ANDROID]:
             self.configure_options += ' --enable-static --with-gtk=no --with-coroutine=gthread '
-            self.patches += ['spice-gtk/0003-Remove-missing-symbols-from-export-files.patch']
+            self.patches = ['spice-gtk/0003-Remove-missing-symbols-from-export-files.patch']
         if self.config.target_platform == Platform.DARWIN:
             self.configure_options += ' --with-coroutine=gthread --disable-introspection CPPFLAGS=" -xobjective-c"'
         elif self.config.target_platform == Platform.WINDOWS:
