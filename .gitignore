@@ -15,5 +15,3 @@ MANIFEST.in
 *~
 *.wsx
 *.wixobj
-Dockerfile.i686
-appimagetool*
