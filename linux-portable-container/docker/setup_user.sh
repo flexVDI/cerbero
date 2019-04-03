@@ -4,7 +4,7 @@
     exit 1
 }
 groupadd -g $LOCAL_GID cerbero
-useradd -d /home/cerbero -g cerbero -M -u $LOCAL_UID -s /bin/bash -G fuse cerbero
+useradd -d /home/cerbero -g cerbero -M -u $LOCAL_UID -s /bin/bash cerbero
 find /home/cerbero -xdev \! -path /home/cerbero/cerbero -exec chown cerbero:cerbero \{\} +
 su -l cerbero
 
