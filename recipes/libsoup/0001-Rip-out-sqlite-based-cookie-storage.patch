@@ -1,9 +1,8 @@
-From 0b5f5bfb4a46194490fd04aa8503502ee8db97e1 Mon Sep 17 00:00:00 2001
-From: =?UTF-8?q?Sebastian=20Dr=C3=B6ge?= <sebastian@centricular.com>
-Date: Fri, 14 Feb 2014 15:05:18 +0100
-Subject: [PATCH] Rip out sqlite-based cookie storage
+From f1264d4c70079ad4a0ec5ab5c311e0ba0d9142a8 Mon Sep 17 00:00:00 2001
+From: Javier Celaya <javier.celaya@flexvdi.com>
+Date: Mon, 1 Apr 2019 17:15:43 +0200
+Subject: [PATCH] Rip out sqlite based cookie storage
 
-We don't need that and it will increase the binary size for no good reason.
 ---
  configure.ac                | 4 ----
  libsoup/Makefile.am         | 6 ------
@@ -13,7 +12,7 @@ We don't need that and it will increase the binary size for no good reason.
  5 files changed, 13 deletions(-)
 
 diff --git a/configure.ac b/configure.ac
-index 3cabf3b..68c5da7 100644
+index 82fa424..2df8ae1 100644
 --- a/configure.ac
 +++ b/configure.ac
 @@ -94,10 +94,6 @@ PKG_CHECK_MODULES(XML, libxml-2.0)
@@ -28,7 +27,7 @@ index 3cabf3b..68c5da7 100644
  dnl *** Check for Win32 ***
  dnl ***********************
 diff --git a/libsoup/Makefile.am b/libsoup/Makefile.am
-index 2022bf3..6ac4909 100644
+index 4232be6..846d0db 100644
 --- a/libsoup/Makefile.am
 +++ b/libsoup/Makefile.am
 @@ -22,7 +22,6 @@ AM_CPPFLAGS = 				\
@@ -116,5 +115,5 @@ index 6bedb62..78b8832 100644
  #include <libsoup/soup-date.h>
  #include <libsoup/soup-enum-types.h>
 -- 
-2.11.0
+2.20.1
 
