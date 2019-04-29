@@ -29,6 +29,8 @@ class Recipe(recipe.Recipe):
     deps = ['libffi', 'zlib']
     can_use_configure_cache = False
 
+    patches = ['glib/0014-Avoid-extra-empty-lines-when-saving-key-file.patch']
+
     files_libs = [
         'libglib-2.0', 'libgio-2.0', 'libgmodule-2.0', 'libgobject-2.0',
         'libgthread-2.0']

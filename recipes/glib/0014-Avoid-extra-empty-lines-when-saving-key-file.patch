@@ -1,0 +1,91 @@
+From fedc1763cb19f4cb1b7a189984d6aa0d86277684 Mon Sep 17 00:00:00 2001
+From: Javier Celaya <javier.celaya@flexvdi.com>
+Date: Sun, 28 Apr 2019 14:40:56 +0200
+Subject: [PATCH] Avoid extra empty lines when saving key file
+
+---
+ glib/gkeyfile.c | 53 ++++++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 52 insertions(+), 1 deletion(-)
+
+diff --git a/glib/gkeyfile.c b/glib/gkeyfile.c
+index ae3bbbc..16a5f0d 100644
+--- a/glib/gkeyfile.c
++++ b/glib/gkeyfile.c
+@@ -1308,6 +1308,9 @@ g_key_file_parse_group (GKeyFile     *key_file,
+ {
+   gchar *group_name;
+   const gchar *group_name_start, *group_name_end;
++  GKeyFileGroup *prev_group;
++  GString *string;
++  GList *tmp, *comment_node;
+   
+   /* advance past opening '['
+    */
+@@ -1329,7 +1332,54 @@ g_key_file_parse_group (GKeyFile     *key_file,
+       return;
+     }
+ 
++  prev_group = key_file->current_group;
++
+   g_key_file_add_group (key_file, group_name);
++
++  /* Inherit prev group's last comments as current group's comment */
++  string = NULL;
++
++  tmp = prev_group->key_value_pairs;
++  while (tmp != NULL)
++    {
++      GKeyFileKeyValuePair *pair;
++
++      pair = (GKeyFileKeyValuePair *) tmp->data;
++
++      if (pair->key != NULL)
++        break;
++
++      if (string == NULL)
++        string = g_string_new (pair->value);
++      else
++        {
++          g_string_prepend_c(string, '\n');
++          g_string_prepend(string, pair->value);
++        }
++
++      comment_node = tmp;
++      tmp = tmp->next;
++      g_key_file_remove_key_value_pair_node (key_file, prev_group,
++                                             comment_node);
++    }
++
++  if (string != NULL)
++    {
++      if (key_file->current_group->comment == NULL)
++        {
++          key_file->current_group->comment = g_slice_new (GKeyFileKeyValuePair);
++          key_file->current_group->comment->key = NULL;
++        }
++      else
++        {
++          if (string->str[0] != '\0' && string->str[0] != '\n')
++            g_string_prepend_c(string, '\n');
++          g_string_prepend(string, key_file->current_group->comment->value);
++          g_free(key_file->current_group->comment->value);
++        }
++      key_file->current_group->comment->value = g_string_free(string, FALSE);
++    }
++
+   g_free (group_name);
+ }
+ 
+@@ -1574,7 +1624,8 @@ g_key_file_to_data (GKeyFile  *key_file,
+ 
+       /* separate groups by at least an empty line */
+       if (data_string->len >= 2 &&
+-          data_string->str[data_string->len - 2] != '\n')
++          data_string->str[data_string->len - 2] != '\n' &&
++          (group->comment == NULL || (group->comment->value[0] != '\0' && group->comment->value[0] != '\n')))
+         g_string_append_c (data_string, '\n');
+ 
+       if (group->comment != NULL)
+-- 
+2.20.1
+
