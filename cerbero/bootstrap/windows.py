@@ -28,8 +28,8 @@ from cerbero.utils import shell, _, fix_winpath, to_unixpath, git
 from cerbero.utils import messages as m
 
 # Toolchain
-GCC_VERSION = '4.9.4'
-MINGW_DOWNLOAD_SOURCE = 'https://depot.flexvdi.com/toolchains'
+GCC_VERSION = '4.7.3'
+MINGW_DOWNLOAD_SOURCE = 'http://gstreamer.freedesktop.org/data/cerbero/toolchain/windows'
 MINGW_TARBALL_TPL = "mingw-%s-gcc-%s-%s-%s.tar.xz"
 
 # Extra dependencies

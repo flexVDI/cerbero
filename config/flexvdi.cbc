@@ -1,0 +1,7 @@
+import os
+import cerbero.bootstrap.windows
+
+distro_packages_install = False
+cerbero.bootstrap.windows.GCC_VERSION = '4.9.4'
+cerbero.bootstrap.windows.MINGW_DOWNLOAD_SOURCE = 'https://depot.flexvdi.com/toolchains'
+
