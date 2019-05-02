@@ -17,21 +17,32 @@ class Recipe(recipe.Recipe):
         Platform.LINUX: ['libcups'],
     }
 
+    def prepare(self):
+        if self.config.target_platform == Platform.WINDOWS:
+            # Fix problem with toolchain Mingw-w64 5.0.4 + GCC 4.9.4
+            self.append_env['CXXFLAGS'] = ' -D_GLIBCXX_USE_C99 -DMINGW_HAS_SECURE_API'
+            self.new_env['DLL_PATH'] = " ".join([
+                self.config.toolchain_prefix,
+                self.config.prefix
+            ])
+
     def install(self):
-        shell.call('make DESTDIR=target_tmp install', self.build_dir)
-        target_tmp = os.path.join(self.build_dir, "target_tmp")
-        target_dir = os.path.join(self.build_dir, "target", "usr", "local")
-        os.renames(target_tmp + self.config.prefix, target_dir)
-
-        if self.config.target_platform == Platform.LINUX and self.config.target_arch == Architecture.X86_64:
+        if self.config.target_platform == Platform.LINUX:
+            shell.call('make DESTDIR=target_tmp install', self.build_dir)
+            target_tmp = os.path.join(self.build_dir, "target_tmp")
+            target_dir = os.path.join(self.build_dir, "target", "usr", "local")
+            os.renames(target_tmp + self.config.prefix, target_dir)
             build_dir_i686 = os.path.join(self.config.sources, '..', 'linux_x86')
-            fgabd64 = self.build_dir
-            fgabd32 = os.path.join(build_dir_i686, os.path.basename(self.build_dir))
-            if not os.path.exists(fgabd32):
-                return
-            with open(os.path.join(self.build_dir, 'build_installer.conf'), 'w') as fd:
-                fd.write('BUILD_DIR_i686=' + fgabd32 + '/target\n')
-                fd.write('BUILD_DIR_x86_64=' + fgabd64 + '/target\n')
-            shell.call('make installer', self.build_dir)
+            target_suffix = "target"
+        else:
+            build_dir_i686 = os.path.join(self.config.sources, '..', 'windows_x86')
+            target_suffix = "."
 
-    # TODO: build Windows version with toolchain
+        if self.config.target_arch == Architecture.X86_64:
+            fgabd64 = os.path.join(self.build_dir, target_suffix)
+            fgabd32 = os.path.join(build_dir_i686, os.path.basename(self.build_dir), target_suffix)
+            if os.path.exists(fgabd32):
+                with open(os.path.join(self.build_dir, 'build_installer.conf'), 'w') as fd:
+                    fd.write('BUILD_DIR_i686=' + fgabd32 + '\n')
+                    fd.write('BUILD_DIR_x86_64=' + fgabd64 + '\n')
+                shell.call('make installer', self.build_dir)
