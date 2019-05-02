@@ -12,7 +12,10 @@ class Recipe(recipe.Recipe):
     commit = 'origin/master'
     btype = BuildType.CMAKE
 
-    deps = ['flexdp', 'libcups', 'boost' ]
+    deps = ['flexdp', 'boost' ]
+    platform_deps = {
+        Platform.LINUX: ['libcups'],
+    }
 
     def install(self):
         shell.call('make DESTDIR=target_tmp install', self.build_dir)
