@@ -29,6 +29,8 @@ class Recipe(recipe.Recipe):
     def install(self):
         if self.config.target_platform == Platform.LINUX:
             shell.call('make DESTDIR=target_tmp install', self.build_dir)
+            shell.call('sed -i s:{0}:/usr/local: installer_header.sh'.format(self.config.prefix),
+                       self.build_dir)
             target_tmp = os.path.join(self.build_dir, "target_tmp")
             target_dir = os.path.join(self.build_dir, "target", "usr", "local")
             os.renames(target_tmp + self.config.prefix, target_dir)
