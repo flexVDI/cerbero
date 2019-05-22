@@ -1,0 +1,37 @@
+From de4d1171d8692d8a8ecb1683a391b8cc1fd93ba0 Mon Sep 17 00:00:00 2001
+From: Javier Celaya <javier.celaya@flexvdi.com>
+Date: Wed, 22 May 2019 08:38:17 +0200
+Subject: [PATCH] Do not use version script on Darwin
+
+---
+ Makefile.am | 1 -
+ Makefile.in | 1 -
+ 2 files changed, 2 deletions(-)
+
+diff --git a/Makefile.am b/Makefile.am
+index b9f781b..9ce6c80 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -68,7 +68,6 @@ libphodav_2_0_la_LIBADD =			\
+ 
+ libphodav_2_0_la_LDFLAGS =				\
+ 	-version-info 0:0:0				\
+-	-Wl,--version-script=${srcdir}/libphodav.syms	\
+ 	-no-undefined					\
+ 	$(NULL)
+ 
+diff --git a/Makefile.in b/Makefile.in
+index d1e3bcf..827dddb 100644
+--- a/Makefile.in
++++ b/Makefile.in
+@@ -568,7 +568,6 @@ libphodav_2_0_la_LIBADD = \
+ 
+ libphodav_2_0_la_LDFLAGS = \
+ 	-version-info 0:0:0				\
+-	-Wl,--version-script=${srcdir}/libphodav.syms	\
+ 	-no-undefined					\
+ 	$(NULL)
+ 
+-- 
+2.17.1
+

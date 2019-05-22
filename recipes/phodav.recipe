@@ -8,3 +8,6 @@ class Recipe(recipe.Recipe):
     url = 'http://ftp.gnome.org/pub/GNOME/sources/phodav/%(version)s/phodav-%(version)s.tar.xz'
     licenses = [License.BSD_like]
 
+    def prepare(self):
+        if self.config.target_platform == Platform.DARWIN:
+            self.patches = [ 'phodav/0001-Do-not-use-version-script-on-Darwin.patch' ]
